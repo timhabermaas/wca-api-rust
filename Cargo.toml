@@ -1,0 +1,14 @@
+[package]
+
+name = "wca-api"
+version = "0.0.1"
+authors = ["Tim Habermaas"]
+
+[dependencies.iron]
+git = "https://github.com/iron/iron.git"
+
+[dependencies.router]
+git = "https://github.com/iron/router.git"
+
+[dependencies.wca-data]
+git = "https://github.com/timhabermaas/wca-data-rust.git"
