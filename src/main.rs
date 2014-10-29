@@ -4,6 +4,7 @@ extern crate serialize;
 extern crate "wca-data" as w;
 
 use std::io::net::ip::Ipv4Addr;
+use std::sync::Arc;
 use iron::{status, Handler, Iron, Request, Response, IronResult};
 use router::{Router, Params};
 use w::wca_data;
@@ -12,11 +13,11 @@ use serialize::json;
 use serialize::json::ToJson;
 
 struct CompetitorHandler {
-    data: wca_data::WCA,
+    data: Arc<wca_data::WCA>,
 }
 
 struct CompetitorRecordsHandler {
-    data: wca_data::WCA,
+    data: Arc<wca_data::WCA>,
 }
 
 struct Competitor {
@@ -38,7 +39,18 @@ impl ToJson for Competitor {
 
 impl Handler for CompetitorRecordsHandler {
     fn call(&self, req: &mut Request) -> IronResult<Response> {
-        Ok(Response::with(status::Ok, "bla"))
+        let id: &str = req.extensions.find::<Router, Params>().unwrap().find("id").unwrap();
+        let records = self.data.find_records(id.to_string());
+        match records {
+            Some(c) => {
+                let encoded = json::encode(c);
+                Ok(Response::with(status::Ok, encoded))
+            },
+            None   => {
+                let encoded = "not found".to_string();
+                Ok(Response::with(status::NotFound, encoded))
+            }
+        }
     }
 }
 
@@ -63,11 +75,12 @@ impl Handler for CompetitorHandler {
 
 fn main() {
     println!("Importing");
-    let w = wca_data::build_from_files(&Path::new("./data/WCA_export_Persons.tsv"), &Path::new("./data/WCA_export_Results.tsv"), &Path::new("./data/WCA_export_RanksAverage.tsv"));
+    let w = wca_data::build_from_files(&Path::new("./data/WCA_export_Persons.tsv"), &Path::new("./data/WCA_export_Results.tsv"), &Path::new("./data/WCA_export_RanksSingle.tsv"));
     println!("Done importing");
     let mut router = Router::new();
-    router.get("/competitors/:id", CompetitorHandler{data: *w});
-    //router.get("/competitors/:id/records", CompetitorRecordsHandler{data: & *w});
+    let data = Arc::new(*w);
+    router.get("/competitors/:id", CompetitorHandler{data: data.clone()});
+    router.get("/competitors/:id/records", CompetitorRecordsHandler{data: data.clone()});
     let server = Iron::new(router);
     server.listen(Ipv4Addr(127, 0, 0, 1), 3000);
 }
