@@ -5,7 +5,7 @@ version = "0.0.1"
 authors = ["Tim Habermaas"]
 
 [dependencies.nickel]
-git = "https://github.com/nickel-org/nickel.rs.git"
+git = "https://github.com/timhabermaas/nickel.rs.git"
 
 [dependencies.wca-data]
 git = "https://github.com/timhabermaas/wca-data-rust.git"

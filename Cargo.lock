@@ -1,15 +1,15 @@
 [root]
-name = "nickel"
+name = "wca-api-rust"
 version = "0.0.1"
 dependencies = [
- "nickel 0.1.0 (git+https://github.com/nickel-org/nickel.rs.git)",
+ "nickel 0.1.0 (git+https://github.com/timhabermaas/nickel.rs.git)",
  "wca-data 0.0.1 (git+https://github.com/timhabermaas/wca-data-rust.git)",
 ]
 
 [[package]]
 name = "anymap"
 version = "0.9.0"
-source = "git+https://github.com/chris-morgan/anymap.git#512885e502985a30a5b64e881f6f3af5a901d301"
+source = "git+https://github.com/chris-morgan/anymap.git#a2560a090f4913796b74b5d85f8caa671fc40274"
 
 [[package]]
 name = "encoding"
@@ -33,20 +33,20 @@ dependencies = [
 [[package]]
 name = "nickel"
 version = "0.1.0"
-source = "git+https://github.com/nickel-org/nickel.rs.git#e032380c50d3766849d9ffaf289b88e2b59cda18"
+source = "git+https://github.com/timhabermaas/nickel.rs.git#20a409594ca4b4f015ef1a3d24f19e960e2bfb71"
 dependencies = [
  "anymap 0.9.0 (git+https://github.com/chris-morgan/anymap.git)",
  "groupable 0.1.0 (git+https://github.com/Ryman/groupable-rs)",
  "http 0.1.0-pre (git+https://github.com/chris-morgan/rust-http.git)",
- "nickel_macros 0.0.1 (git+https://github.com/nickel-org/nickel.rs.git)",
- "rust-mustache 0.3.0 (git+https://github.com/SimonPersson/rust-mustache.git)",
+ "nickel_macros 0.0.1 (git+https://github.com/timhabermaas/nickel.rs.git)",
+ "rust-mustache 0.3.0 (git+https://github.com/timhabermaas/rust-mustache.git)",
  "url 0.1.0 (git+https://github.com/servo/rust-url.git)",
 ]
 
 [[package]]
 name = "nickel_macros"
 version = "0.0.1"
-source = "git+https://github.com/nickel-org/nickel.rs.git#e032380c50d3766849d9ffaf289b88e2b59cda18"
+source = "git+https://github.com/timhabermaas/nickel.rs.git#20a409594ca4b4f015ef1a3d24f19e960e2bfb71"
 
 [[package]]
 name = "openssl"
@@ -61,7 +61,7 @@ source = "git+git://github.com/BurntSushi/rust-csv#af6e80bd40a299393fb07fded3fb0
 [[package]]
 name = "rust-mustache"
 version = "0.3.0"
-source = "git+https://github.com/SimonPersson/rust-mustache.git#a679560c614fe664aff0823aaf7bd7f863026ecb"
+source = "git+https://github.com/timhabermaas/rust-mustache.git#bf46d703791ba78ff10341f782534cf71a919db8"
 
 [[package]]
 name = "url"
