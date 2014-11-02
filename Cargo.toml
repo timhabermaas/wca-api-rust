@@ -1,14 +1,11 @@
 [package]
 
-name = "wca-api"
+name = "wca-api-rust"
 version = "0.0.1"
 authors = ["Tim Habermaas"]
 
-[dependencies.iron]
-git = "https://github.com/iron/iron.git"
-
-[dependencies.router]
-git = "https://github.com/iron/router.git"
+[dependencies.nickel]
+git = "https://github.com/nickel-org/nickel.rs.git"
 
 [dependencies.wca-data]
 git = "https://github.com/timhabermaas/wca-data-rust.git"
