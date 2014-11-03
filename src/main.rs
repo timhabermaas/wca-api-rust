@@ -127,5 +127,5 @@ fn main() {
     server.utilize(Nickel::query_string());
     server.utilize(router);
 
-    server.listen(Ipv4Addr(127, 0, 0, 1), 6767);
+    server.listen(Ipv4Addr(0, 0, 0, 0), 6767);
 }

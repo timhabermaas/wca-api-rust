@@ -1,0 +1,7 @@
+wcaapi:
+  build: .
+  command: target/release/wca-api-rust
+  ports:
+    - "80:6767"
+  volumes:
+      - ./data:/home/rust/wca-api/data
