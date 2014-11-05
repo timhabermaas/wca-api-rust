@@ -2,7 +2,7 @@
 name = "wca-api-rust"
 version = "0.0.1"
 dependencies = [
- "nickel 0.1.0 (git+https://github.com/timhabermaas/nickel.rs.git)",
+ "nickel 0.1.0 (git+https://github.com/nickel-org/nickel.rs.git)",
  "wca-data 0.0.1 (git+https://github.com/timhabermaas/wca-data-rust.git)",
 ]
 
@@ -19,12 +19,12 @@ source = "git+https://github.com/lifthrasiir/rust-encoding#a739425a3f3174a31fe38
 [[package]]
 name = "groupable"
 version = "0.1.0"
-source = "git+https://github.com/Ryman/groupable-rs#ae2a086edb0b10a7e5f143405d072871e75a118e"
+source = "git+https://github.com/Ryman/groupable-rs#66f2f53a6ac6850dbdddb8c6023ad7c3c2a9c2a5"
 
 [[package]]
 name = "http"
 version = "0.1.0-pre"
-source = "git+https://github.com/chris-morgan/rust-http.git#5ee6c4c2d81d98be1ad16cd43cf1697de57d01a5"
+source = "git+https://github.com/chris-morgan/rust-http.git#c8aef7e0192161aa528ed067fad85bd353088a52"
 dependencies = [
  "openssl 0.0.0 (git+https://github.com/sfackler/rust-openssl.git)",
  "url 0.1.0 (git+https://github.com/servo/rust-url.git)",
@@ -33,12 +33,12 @@ dependencies = [
 [[package]]
 name = "nickel"
 version = "0.1.0"
-source = "git+https://github.com/timhabermaas/nickel.rs.git#20a409594ca4b4f015ef1a3d24f19e960e2bfb71"
+source = "git+https://github.com/nickel-org/nickel.rs.git#e6e6fe3c1c7ad76876aee29a7c467be814fcc0a0"
 dependencies = [
  "anymap 0.9.0 (git+https://github.com/chris-morgan/anymap.git)",
  "groupable 0.1.0 (git+https://github.com/Ryman/groupable-rs)",
  "http 0.1.0-pre (git+https://github.com/chris-morgan/rust-http.git)",
- "nickel_macros 0.0.1 (git+https://github.com/timhabermaas/nickel.rs.git)",
+ "nickel_macros 0.0.1 (git+https://github.com/nickel-org/nickel.rs.git)",
  "rust-mustache 0.3.0 (git+https://github.com/timhabermaas/rust-mustache.git)",
  "url 0.1.0 (git+https://github.com/servo/rust-url.git)",
 ]
@@ -46,7 +46,7 @@ dependencies = [
 [[package]]
 name = "nickel_macros"
 version = "0.0.1"
-source = "git+https://github.com/timhabermaas/nickel.rs.git#20a409594ca4b4f015ef1a3d24f19e960e2bfb71"
+source = "git+https://github.com/nickel-org/nickel.rs.git#e6e6fe3c1c7ad76876aee29a7c467be814fcc0a0"
 
 [[package]]
 name = "openssl"
@@ -55,8 +55,8 @@ source = "git+https://github.com/sfackler/rust-openssl.git#1e706b8ef4d4344b5297b
 
 [[package]]
 name = "rust-csv"
-version = "0.5.0"
-source = "git+git://github.com/BurntSushi/rust-csv#af6e80bd40a299393fb07fded3fb013f634c6caf"
+version = "0.5.1"
+source = "git+git://github.com/BurntSushi/rust-csv#35b5a1e866daf164603c45da09267725f2c5251a"
 
 [[package]]
 name = "rust-mustache"
@@ -74,8 +74,8 @@ dependencies = [
 [[package]]
 name = "wca-data"
 version = "0.0.1"
-source = "git+https://github.com/timhabermaas/wca-data-rust.git#cddca02aec8ebbcbb0f503a12d8136e3b4e320c3"
+source = "git+https://github.com/timhabermaas/wca-data-rust.git#ef6ddd8ad1c365638bff9ae7f2ad3b26486bf100"
 dependencies = [
- "rust-csv 0.5.0 (git+git://github.com/BurntSushi/rust-csv)",
+ "rust-csv 0.5.1 (git+git://github.com/BurntSushi/rust-csv)",
 ]
 

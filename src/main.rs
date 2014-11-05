@@ -115,7 +115,7 @@ fn main() {
     let mut server = Nickel::new();
     let mut router = Nickel::router();
     println!("Importing");
-    let w = wca_data::build_from_files(&Path::new("./data/WCA_export_Persons.tsv"), &Path::new("./data/WCA_export_Results.tsv"), &Path::new("./data/WCA_export_RanksSingle.tsv"));
+    let w = wca_data::build_from_files(&Path::new("./data/WCA_export_Persons.tsv"), &Path::new("./data/WCA_export_Results.tsv"), &Path::new("./data/WCA_export_RanksSingle.tsv"), &Path::new("./data/WCA_export_RanksAverage.tsv"));
     println!("Importing Done");
 
     let w_arc = Arc::new(*w);
