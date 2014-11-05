@@ -74,7 +74,7 @@ dependencies = [
 [[package]]
 name = "wca-data"
 version = "0.0.1"
-source = "git+https://github.com/timhabermaas/wca-data-rust.git#ef6ddd8ad1c365638bff9ae7f2ad3b26486bf100"
+source = "git+https://github.com/timhabermaas/wca-data-rust.git#415431bcf76aced107177fec67eb5339544ea8ac"
 dependencies = [
  "rust-csv 0.5.1 (git+git://github.com/BurntSushi/rust-csv)",
 ]

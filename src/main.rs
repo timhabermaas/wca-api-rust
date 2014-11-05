@@ -29,6 +29,7 @@ struct CompetitorRecordsHandler {
 struct Competitor {
     id: String,
     name: String,
+    gender: wca_data::Gender,
 }
 
 #[deriving(Encodable)]
@@ -42,6 +43,12 @@ impl ToJson for Competitor {
         let mut sub = TreeMap::new();
         sub.insert("id".to_string(), self.id.to_json());
         sub.insert("name".to_string(), self.name.to_json());
+        let gender: Option<String> = match self.gender {
+            wca_data::Male   => Some("m".to_string()),
+            wca_data::Female => Some("f".to_string()),
+            _                => None,
+        };
+        sub.insert("gender".to_string(), gender.to_json());
 
         let mut d = TreeMap::new();
         d.insert("competitor".to_string(), json::Object(sub));
@@ -63,7 +70,7 @@ impl RequestHandler for CompetitorHandler {
 
         match result {
             Some(c) => {
-                let c = Competitor { id: c.id.clone(), name: c.name.clone() };
+                let c = Competitor { id: c.id.clone(), name: c.name.clone(), gender: c.gender };
                 let data = c.to_json().to_string();
                 res.send(data);
             },
