@@ -105,8 +105,8 @@ impl RequestHandler for RecordsHandler {
         let puzzle = req.param("puzzle_id");
         let type_   = req.param("type");
         let rankings = match type_ {
-            "single"  => self.data.find_single_rankings(&puzzle.to_string()),
-            "average" => self.data.find_average_rankings(&puzzle.to_string()),
+            "single"  => self.data.find_rankings(&puzzle.to_string(), wca_data::Single),
+            "average" => self.data.find_rankings(&puzzle.to_string(), wca_data::Average),
             _         => { res.status_code(status::NotFound); return Ok(Halt); }
         };
         match rankings {
