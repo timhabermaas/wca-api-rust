@@ -30,6 +30,10 @@ struct RecordsSingleHandler {
     data: Arc<wca_data::WCA>,
 }
 
+struct RecordsAverageHandler {
+    data: Arc<wca_data::WCA>,
+}
+
 struct Competitor {
     id: String,
     name: String,
@@ -72,7 +76,7 @@ impl ToJson for Competitor {
 impl RequestHandler for CompetitorHandler {
     fn handle(&self, req: &Request, res: &mut Response) -> MiddlewareResult {
         let id = req.param("id");
-        let result = self.data.find_competitor(id.to_string());
+        let result = self.data.find_competitor(&id.to_string());
 
         res.origin.headers.content_type = Some(MediaType::new("application".into_string(),
                                                               "json".into_string(),
@@ -103,11 +107,46 @@ impl RequestHandler for RecordsSingleHandler {
                                                               "utf8".into_string())]));
 
         let puzzle = req.param("puzzle_id");
-        let rankings = self.data.find_single_rankings(puzzle.to_string());
+        let rankings = self.data.find_single_rankings(&puzzle.to_string());
         match rankings {
             Some(v) => {
                 let rankings: Vec<Ranking> = v.iter().map(|r| {
-                    let competitor = self.data.find_competitor(r.competitor_id.clone()).unwrap();
+                    let competitor = self.data.find_competitor(&r.competitor_id).unwrap();
+                    Ranking {
+                        time: r.result.time,
+                        competitor: CompetitorPartOfCollection {
+                            id: competitor.id.as_slice(),
+                            name: competitor.name.as_slice(),
+                            gender: gender_to_str(&competitor.gender),
+                        }
+                    }
+                }
+                ).collect();
+                res.send(format!("{}", json::encode(&rankings)));
+            },
+            None => {
+                res.status_code(status::NotFound);
+                res.send("{\"error\": \"not found\"}");
+            },
+        }
+
+        Ok(Halt)
+    }
+}
+
+impl RequestHandler for RecordsAverageHandler {
+    fn handle(&self, req: &Request, res: &mut Response) -> MiddlewareResult {
+        res.origin.headers.content_type = Some(MediaType::new("application".into_string(),
+                                                              "json".into_string(),
+                                                              vec![("charset".into_string(),
+                                                              "utf8".into_string())]));
+
+        let puzzle = req.param("puzzle_id");
+        let rankings = self.data.find_average_rankings(&puzzle.to_string());
+        match rankings {
+            Some(v) => {
+                let rankings: Vec<Ranking> = v.iter().map(|r| {
+                    let competitor = self.data.find_competitor(&r.competitor_id).unwrap();
                     Ranking {
                         time: r.result.time,
                         competitor: CompetitorPartOfCollection {
@@ -142,7 +181,7 @@ impl RequestHandler for CompetitorSearchHandler {
     fn handle(&self, req: &Request, res: &mut Response) -> MiddlewareResult {
         let q = req.query("q", "default");
         let m = q.get(0).unwrap();
-        let competitors = self.data.find_competitors(m.clone());
+        let competitors = self.data.find_competitors(m);
         let competitors: Vec<CompetitorPartOfCollection> = competitors.iter().map(|c| CompetitorPartOfCollection { id: c.id.as_slice(), name: c.name.as_slice(), gender: gender_to_str(&c.gender) }).collect();
 
         res.origin.headers.content_type = Some(MediaType::new("application".into_string(),
@@ -157,7 +196,7 @@ impl RequestHandler for CompetitorSearchHandler {
 impl RequestHandler for CompetitorRecordsHandler {
     fn handle(&self, req: &Request, res: &mut Response) -> MiddlewareResult {
         let id = req.param("id");
-        match self.data.find_records(id.to_string()) {
+        match self.data.find_records(&id.to_string()) {
             Some(r) => {
                 res.send(json::encode(r));
             },
@@ -185,6 +224,7 @@ fn main() {
     router.get("/competitors/:id/records", CompetitorRecordsHandler { data: w_arc.clone() });
     router.get("/competitors", CompetitorSearchHandler { data: w_arc.clone() });
     router.get("/records/:puzzle_id/single", RecordsSingleHandler { data: w_arc.clone() });
+    router.get("/records/:puzzle_id/average", RecordsAverageHandler { data: w_arc.clone() });
 
     server.utilize(Nickel::query_string());
     server.utilize(router);
