@@ -36,6 +36,7 @@ struct Competitor {
 struct CompetitorPartOfCollection<'a> {
     id: &'a str,
     name: &'a str,
+    gender: &'a str,
 }
 
 impl ToJson for Competitor {
@@ -84,12 +85,20 @@ impl RequestHandler for CompetitorHandler {
     }
 }
 
+fn gender_to_str(gender: &wca_data::Gender) -> &str {
+    match gender {
+        &wca_data::Male   => "m",
+        &wca_data::Female => "f",
+        _                 => "",
+    }
+}
+
 impl RequestHandler for CompetitorSearchHandler {
     fn handle(&self, req: &Request, res: &mut Response) -> MiddlewareResult {
         let q = req.query("q", "default");
         let m = q.get(0).unwrap();
         let competitors = self.data.find_competitors(m.clone());
-        let competitors: Vec<CompetitorPartOfCollection> = competitors.iter().map(|c| CompetitorPartOfCollection { id: c.id.as_slice(), name: c.name.as_slice() }).collect();
+        let competitors: Vec<CompetitorPartOfCollection> = competitors.iter().map(|c| CompetitorPartOfCollection { id: c.id.as_slice(), name: c.name.as_slice(), gender: gender_to_str(&c.gender) }).collect();
 
         res.origin.headers.content_type = Some(MediaType::new("application".into_string(),
                                                               "json".into_string(),
