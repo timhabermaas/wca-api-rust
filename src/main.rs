@@ -26,6 +26,10 @@ struct CompetitorRecordsHandler {
     data: Arc<wca_data::WCA>,
 }
 
+struct RecordsSingleHandler {
+    data: Arc<wca_data::WCA>,
+}
+
 struct Competitor {
     id: String,
     name: String,
@@ -37,6 +41,12 @@ struct CompetitorPartOfCollection<'a> {
     id: &'a str,
     name: &'a str,
     gender: &'a str,
+}
+
+#[deriving(Encodable)]
+struct Ranking<'a> {
+    time: uint,
+    competitor: CompetitorPartOfCollection<'a>,
 }
 
 impl ToJson for Competitor {
@@ -78,7 +88,42 @@ impl RequestHandler for CompetitorHandler {
             None => {
                 res.status_code(status::NotFound);
                 res.send("{\"error\": \"not found\"}");
-            }
+            },
+        }
+
+        Ok(Halt)
+    }
+}
+
+impl RequestHandler for RecordsSingleHandler {
+    fn handle(&self, req: &Request, res: &mut Response) -> MiddlewareResult {
+        res.origin.headers.content_type = Some(MediaType::new("application".into_string(),
+                                                              "json".into_string(),
+                                                              vec![("charset".into_string(),
+                                                              "utf8".into_string())]));
+
+        let puzzle = req.param("puzzle_id");
+        let rankings = self.data.find_single_rankings(puzzle.to_string());
+        match rankings {
+            Some(v) => {
+                let rankings: Vec<Ranking> = v.iter().map(|r| {
+                    let competitor = self.data.find_competitor(r.competitor_id.clone()).unwrap();
+                    Ranking {
+                        time: r.result.time,
+                        competitor: CompetitorPartOfCollection {
+                            id: competitor.id.as_slice(),
+                            name: competitor.name.as_slice(),
+                            gender: gender_to_str(&competitor.gender),
+                        }
+                    }
+                }
+                ).collect();
+                res.send(format!("{}", json::encode(&rankings)));
+            },
+            None => {
+                res.status_code(status::NotFound);
+                res.send("{\"error\": \"not found\"}");
+            },
         }
 
         Ok(Halt)
@@ -139,6 +184,7 @@ fn main() {
     router.get("/competitors/:id", CompetitorHandler { data: w_arc.clone() });
     router.get("/competitors/:id/records", CompetitorRecordsHandler { data: w_arc.clone() });
     router.get("/competitors", CompetitorSearchHandler { data: w_arc.clone() });
+    router.get("/records/:puzzle_id/single", RecordsSingleHandler { data: w_arc.clone() });
 
     server.utilize(Nickel::query_string());
     server.utilize(router);
