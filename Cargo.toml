@@ -8,4 +8,4 @@ authors = ["Tim Habermaas"]
 git = "https://github.com/nickel-org/nickel.rs.git"
 
 [dependencies.wca-data]
-git = "https://github.com/timhabermaas/wca-data-rust.git"
+path = "src/data"

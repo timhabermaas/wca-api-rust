@@ -3,7 +3,7 @@ name = "wca-api-rust"
 version = "0.0.1"
 dependencies = [
  "nickel 0.1.0 (git+https://github.com/nickel-org/nickel.rs.git)",
- "wca-data 0.0.1 (git+https://github.com/timhabermaas/wca-data-rust.git)",
+ "wca-data 0.0.1",
 ]
 
 [[package]]
@@ -88,7 +88,7 @@ source = "git+https://github.com/sfackler/rust-openssl.git#766ce4b7785c0b038bee9
 [[package]]
 name = "rust-csv"
 version = "0.5.1"
-source = "git+git://github.com/BurntSushi/rust-csv#fe382eeb78e7542effe6daf5576b1aeb6fd9dde6"
+source = "git+git://github.com/BurntSushi/rust-csv#1bacb0a78e2e9c8168c0ffffaa17bb5891e97fbd"
 
 [[package]]
 name = "rust-mustache"
@@ -114,7 +114,6 @@ dependencies = [
 [[package]]
 name = "wca-data"
 version = "0.0.1"
-source = "git+https://github.com/timhabermaas/wca-data-rust.git#7a3b01ba9a40d32aff4f1af5f8545589e3098e04"
 dependencies = [
  "rust-csv 0.5.1 (git+git://github.com/BurntSushi/rust-csv)",
 ]
