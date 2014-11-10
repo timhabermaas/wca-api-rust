@@ -181,7 +181,7 @@ impl RequestHandler for CompetitorRecordsHandler {
 }
 
 impl RequestHandler for EventsHandler {
-    fn handle(&self, req: &Request, res: &mut Response) -> MiddlewareResult {
+    fn handle(&self, _: &Request, res: &mut Response) -> MiddlewareResult {
         res.send(json::encode(self.data.find_events()));
 
         Ok(Halt)

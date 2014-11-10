@@ -100,12 +100,8 @@ pub mod wca_data {
             } else {
                 self.competitions.insert(id.clone(), HashSet::new());
             }
-            let possible_set = self.competitions.get_mut(&id);
-            // TODO use unwrap, `None` not possible
-            match possible_set {
-                Some(set) => { set.insert(comp_id); },
-                None => { println!("set not found"); },
-            }
+            let set = self.competitions.get_mut(&id).unwrap();
+            set.insert(comp_id);
         }
 
         fn add_single_record(&mut self, id: String, puzzle: String, time: uint) {
@@ -113,11 +109,8 @@ pub mod wca_data {
             } else {
                 self.records.insert(id.clone(), HashMap::new());
             }
-            let map = self.records.get_mut(&id);
-            match map {
-                Some(map) => { map.insert(puzzle, Record{single: CompResult{time: time}, average: None}); },
-                None => { println!("map not found"); },
-            }
+            let map = self.records.get_mut(&id).unwrap();
+            map.insert(puzzle, Record{single: CompResult{time: time}, average: None});
         }
 
         fn add_single_ranking(&mut self, puzzle_id: String, best: uint, competitor_id: String) {
@@ -125,11 +118,8 @@ pub mod wca_data {
             } else {
                 self.single_rankings.insert(puzzle_id.clone(), vec![]);
             }
-            let vec = self.single_rankings.get_mut(&puzzle_id);
-            match vec {
-                Some(vec) => { vec.push(Ranking { result: CompResult {time: best}, competitor_id: competitor_id.clone()}); },
-                None => { panic!("This will not happen") },
-            }
+            let vec = self.single_rankings.get_mut(&puzzle_id).unwrap();
+            vec.push(Ranking { result: CompResult {time: best}, competitor_id: competitor_id.clone()});
         }
 
         fn add_average_ranking(&mut self, puzzle_id: String, best: uint, competitor_id: String) {
@@ -137,11 +127,8 @@ pub mod wca_data {
             } else {
                 self.average_rankings.insert(puzzle_id.clone(), vec![]);
             }
-            let vec = self.average_rankings.get_mut(&puzzle_id);
-            match vec {
-                Some(vec) => { vec.push(Ranking { result: CompResult {time: best}, competitor_id: competitor_id.clone()}); },
-                None => { panic!("This will not happen") },
-            }
+            let vec = self.average_rankings.get_mut(&puzzle_id).unwrap();
+            vec.push(Ranking { result: CompResult {time: best}, competitor_id: competitor_id.clone()});
         }
 
         fn add_average_record(&mut self, id: String, puzzle: String, time: uint) {
@@ -154,7 +141,7 @@ pub mod wca_data {
             records.insert(puzzle, Record { single: record.single, average: Some(CompResult{time: time}) });
         }
 
-        pub fn number_of_comps(&mut self, id: &String) -> Option<uint> {
+        pub fn number_of_comps(&self, id: &String) -> Option<uint> {
             self.competitions.get(id).map(|set| set.len())
         }
 
