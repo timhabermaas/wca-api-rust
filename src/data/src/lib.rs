@@ -44,7 +44,7 @@ pub mod wca_data {
         pub id: WcaId,
         subid: int,
         pub name: String,
-        pub country_id: String,
+        pub country: String,
         pub gender: Gender,
     }
 
