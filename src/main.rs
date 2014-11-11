@@ -40,7 +40,7 @@ struct Competitor {
     gender: wca_data::Gender,
 }
 
-#[deriving(Encodable)]
+#[deriving(Encodable, PartialEq)]
 struct CompetitorPartOfCollection<'a> {
     id: &'a str,
     name: &'a str,
@@ -153,12 +153,14 @@ impl RequestHandler for CompetitorSearchHandler {
         let m = q.get(0).unwrap();
         let competitors = self.data.find_competitors(m);
         let competitors: Vec<CompetitorPartOfCollection> = competitors.iter().map(|c| CompetitorPartOfCollection { id: c.id.as_slice(), name: c.name.as_slice(), gender: gender_to_str(&c.gender) }).collect();
+        let mut wrapped_competitors: TreeMap<String, &Vec<CompetitorPartOfCollection>> = TreeMap::new();
+        wrapped_competitors.insert("competitors".to_string(), &competitors);
 
         res.origin.headers.content_type = Some(MediaType::new("application".into_string(),
                                                               "json".into_string(),
                                                               vec![("charset".into_string(),
                                                               "utf8".into_string())]));
-        res.send(format!("{}", json::encode(&competitors)));
+        res.send(format!("{}", json::encode(&wrapped_competitors)));
         Ok(Halt)
     }
 }
