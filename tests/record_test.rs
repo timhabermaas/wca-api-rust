@@ -59,3 +59,14 @@ fn average_rankings() {
     assert_eq!(ranks.get(1).unwrap().result.time, 1262u);
     assert_eq!(ranks.get(1).unwrap().competitor_id, "2003BRUC01".to_string());
 }
+
+#[test]
+fn records_of_multiple_competitors() {
+    let w = setup_data();
+    let ids = vec!["2003BRUC01", "2005AKKE01"].iter().map(|id| id.to_string()).collect();
+    let records = w.find_rankings_for(&"333".to_string(), ids);
+
+    assert_eq!(records.len(), 2);
+    assert_eq!(records.get(0).unwrap().single.time, 708);
+    assert_eq!(records.get(1).unwrap().single.time, 871);
+}

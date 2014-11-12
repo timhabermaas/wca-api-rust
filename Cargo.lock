@@ -51,21 +51,29 @@ source = "git+https://github.com/lifthrasiir/rust-encoding#a06637cc6d0da37c12c68
 [[package]]
 name = "groupable"
 version = "0.1.0"
-source = "git+https://github.com/nickel-org/groupable-rs#66f2f53a6ac6850dbdddb8c6023ad7c3c2a9c2a5"
+source = "git+https://github.com/nickel-org/groupable-rs#74c9e38ede02008fc04c47a33c4ba9b995dc3606"
 
 [[package]]
 name = "http"
 version = "0.1.0-pre"
-source = "git+https://github.com/nickel-org/rust-http.git#3224008263e065384403dd4f899646e783cc0b6e"
+source = "git+https://github.com/nickel-org/rust-http.git#d3589464cc0a2918e35c2b8f1317e7038f79a94b"
 dependencies = [
- "openssl 0.0.0 (git+https://github.com/sfackler/rust-openssl.git)",
- "url 0.1.0 (git+https://github.com/servo/rust-url)",
+ "openssl 0.0.1 (git+https://github.com/sfackler/rust-openssl.git)",
+ "url 0.1.0 (git+https://github.com/nickel-org/rust-url.git)",
+]
+
+[[package]]
+name = "libressl-pnacl-sys"
+version = "2.0.0"
+source = "git+https://github.com/DiamondLovesYou/libressl-pnacl-sys.git#24b6800971587e8881215d9398b180c0a79739dc"
+dependencies = [
+ "pnacl-build-helper 0.0.1 (git+https://github.com/DiamondLovesYou/cargo-pnacl-helper.git)",
 ]
 
 [[package]]
 name = "nickel"
 version = "0.1.0"
-source = "git+https://github.com/nickel-org/nickel.rs.git#f45709545f2f887bb10f27e1cdf59fdfd97a7f83"
+source = "git+https://github.com/nickel-org/nickel.rs.git#fc93f5a0eee4ffa327c1d359f4f8202e92c6151a"
 dependencies = [
  "anymap 0.9.0 (git+https://github.com/nickel-org/anymap.git)",
  "groupable 0.1.0 (git+https://github.com/nickel-org/groupable-rs)",
@@ -78,17 +86,39 @@ dependencies = [
 [[package]]
 name = "nickel_macros"
 version = "0.0.1"
-source = "git+https://github.com/nickel-org/nickel.rs.git#f45709545f2f887bb10f27e1cdf59fdfd97a7f83"
+source = "git+https://github.com/nickel-org/nickel.rs.git#fc93f5a0eee4ffa327c1d359f4f8202e92c6151a"
 
 [[package]]
 name = "openssl"
-version = "0.0.0"
-source = "git+https://github.com/sfackler/rust-openssl.git#766ce4b7785c0b038bee95b74564e5b9bf7e9a4b"
+version = "0.0.1"
+source = "git+https://github.com/sfackler/rust-openssl.git#1f1c30dd3a577b301bb85bf95f964227f84d73fd"
+dependencies = [
+ "libressl-pnacl-sys 2.0.0 (git+https://github.com/DiamondLovesYou/libressl-pnacl-sys.git)",
+ "openssl-sys 0.0.1 (git+https://github.com/alexcrichton/openssl-sys)",
+]
+
+[[package]]
+name = "openssl-sys"
+version = "0.0.1"
+source = "git+https://github.com/alexcrichton/openssl-sys#d66fe8400ab3cbb79ed405e26ae19c0d0cc20931"
+dependencies = [
+ "pkg-config 0.0.1 (git+https://github.com/alexcrichton/pkg-config-rs)",
+]
+
+[[package]]
+name = "pkg-config"
+version = "0.0.1"
+source = "git+https://github.com/alexcrichton/pkg-config-rs#d24a08d87d63df8dc9526c503944415b86719220"
+
+[[package]]
+name = "pnacl-build-helper"
+version = "0.0.1"
+source = "git+https://github.com/DiamondLovesYou/cargo-pnacl-helper.git#1926cf56ce342af862faa9691e1ca63d3c8f4ba5"
 
 [[package]]
 name = "rust-csv"
 version = "0.5.1"
-source = "git+git://github.com/BurntSushi/rust-csv#1bacb0a78e2e9c8168c0ffffaa17bb5891e97fbd"
+source = "git+git://github.com/BurntSushi/rust-csv#7a216b4cf5616d34ed0f8896624740fb9b66241d"
 
 [[package]]
 name = "rust-mustache"
@@ -99,14 +129,6 @@ source = "git+https://github.com/nickel-org/rust-mustache.git#bf46d703791ba78ff1
 name = "url"
 version = "0.1.0"
 source = "git+https://github.com/nickel-org/rust-url.git#8a61b7654ab5378b488225a1d8a9cbbbcbd38894"
-dependencies = [
- "encoding 0.2.0 (git+https://github.com/lifthrasiir/rust-encoding)",
-]
-
-[[package]]
-name = "url"
-version = "0.1.0"
-source = "git+https://github.com/servo/rust-url#8a61b7654ab5378b488225a1d8a9cbbbcbd38894"
 dependencies = [
  "encoding 0.2.0 (git+https://github.com/lifthrasiir/rust-encoding)",
 ]

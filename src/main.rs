@@ -34,6 +34,10 @@ struct EventsHandler {
     data: Arc<wca_data::WCA>,
 }
 
+struct SelectiveRecordsHandler {
+    data: Arc<wca_data::WCA>,
+}
+
 struct Competitor {
     id: String,
     name: String,
@@ -169,6 +173,11 @@ impl RequestHandler for CompetitorSearchHandler {
 
 impl RequestHandler for CompetitorRecordsHandler {
     fn handle(&self, req: &Request, res: &mut Response) -> MiddlewareResult {
+        res.origin.headers.content_type = Some(MediaType::new("application".into_string(),
+                                                              "json".into_string(),
+                                                              vec![("charset".into_string(),
+                                                              "utf8".into_string())]));
+
         let id = req.param("id");
         match self.data.find_records(&id.to_string()) {
             Some(r) => {
@@ -186,7 +195,28 @@ impl RequestHandler for CompetitorRecordsHandler {
 
 impl RequestHandler for EventsHandler {
     fn handle(&self, _: &Request, res: &mut Response) -> MiddlewareResult {
+        res.origin.headers.content_type = Some(MediaType::new("application".into_string(),
+                                                              "json".into_string(),
+                                                              vec![("charset".into_string(),
+                                                              "utf8".into_string())]));
         res.send(json::encode(self.data.find_events()));
+
+        Ok(Halt)
+    }
+}
+
+impl RequestHandler for SelectiveRecordsHandler {
+    fn handle(&self, req: &Request, res: &mut Response) -> MiddlewareResult {
+        res.origin.headers.content_type = Some(MediaType::new("application".into_string(),
+                                                              "json".into_string(),
+                                                              vec![("charset".into_string(),
+                                                              "utf8".into_string())]));
+
+        let ids = req.query("ids", "");
+        let puzzle_id = req.param("puzzle_id");
+        let records = self.data.find_rankings_for(&puzzle_id.to_string(), ids);
+
+        res.send(json::encode(&records));
 
         Ok(Halt)
     }
@@ -210,6 +240,7 @@ fn main() {
     router.get("/competitors/:id/records", CompetitorRecordsHandler { data: w_arc.clone() });
     router.get("/competitors", CompetitorSearchHandler { data: w_arc.clone() });
     router.get("/records/:puzzle_id/:type", RecordsHandler { data: w_arc.clone() });
+    router.get("/records/:puzzle_id", SelectiveRecordsHandler { data: w_arc.clone() });
     router.get("/events", EventsHandler { data: w_arc.clone() });
 
     server.utilize(Nickel::query_string());

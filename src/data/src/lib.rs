@@ -172,6 +172,17 @@ pub mod wca_data {
             }
         }
 
+        pub fn find_rankings_for(&self, puzzle_id: &String, ids: Vec<String>) -> Vec<&Record> {
+            let mut result: Vec<&Record> = ids.iter().filter_map(|id|
+                self.find_records(id).map(|r| r.get(puzzle_id)).unwrap_or_else(|| None)
+            ).collect();
+
+            result.sort_by(|a, b|
+                a.single.time.cmp(&b.single.time)
+            );
+            result
+        }
+
         pub fn new(persons_path: &Path, results_path: &Path, records_single_path: &Path, records_average_path: &Path, events_path: &Path) -> Box<WCA> {
             let mut w = box WCA { persons: TreeMap::new(), competitions: HashMap::new(), records: HashMap::new(), single_rankings: HashMap::new(), average_rankings: HashMap::new(), events: Vec::new() };
             load_persons(&mut *w, persons_path);
