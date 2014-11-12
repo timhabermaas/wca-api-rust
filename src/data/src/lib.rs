@@ -75,6 +75,13 @@ pub mod wca_data {
         pub average: Option<CompResult>,
     }
 
+    #[deriving(Encodable)]
+    pub struct RecordWithCompetitor {
+        pub competitor_id: String,
+        pub single: CompResult,
+        pub average: Option<CompResult>,
+    }
+
     pub struct WCA {
         pub persons: TreeMap<WcaId, Person>,
         competitions: HashMap<WcaId, HashSet<String>>,
@@ -172,9 +179,15 @@ pub mod wca_data {
             }
         }
 
-        pub fn find_rankings_for(&self, puzzle_id: &String, ids: Vec<String>) -> Vec<&Record> {
-            let mut result: Vec<&Record> = ids.iter().filter_map(|id|
-                self.find_records(id).map(|r| r.get(puzzle_id)).unwrap_or_else(|| None)
+        pub fn find_rankings_for(&self, puzzle_id: &String, ids: Vec<String>) -> Vec<RecordWithCompetitor> {
+            let mut result: Vec<RecordWithCompetitor> = ids.iter().filter_map(|id|
+                self.find_records(id).map(|r|{
+                    let record = r.get(puzzle_id);
+                    match record {
+                        Some(r) => Some(RecordWithCompetitor { single: r.single, average: r.average, competitor_id: id.to_string() }),
+                        None => None,
+                    }
+                }).unwrap_or_else(|| None)
             ).collect();
 
             result.sort_by(|a, b|

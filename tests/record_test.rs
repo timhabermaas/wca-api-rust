@@ -68,5 +68,7 @@ fn records_of_multiple_competitors() {
 
     assert_eq!(records.len(), 2);
     assert_eq!(records.get(0).unwrap().single.time, 708);
+    assert_eq!(records.get(0).unwrap().competitor_id, "2005AKKE01".to_string());
     assert_eq!(records.get(1).unwrap().single.time, 871);
+    assert_eq!(records.get(1).unwrap().competitor_id, "2003BRUC01".to_string());
 }
