@@ -42,6 +42,7 @@ struct Competitor {
     id: String,
     name: String,
     gender: wca_data::Gender,
+    competition_count: uint,
 }
 
 #[deriving(Encodable, PartialEq)]
@@ -90,7 +91,7 @@ impl RequestHandler for CompetitorHandler {
 
         match result {
             Some(c) => {
-                let c = Competitor { id: c.id.clone(), name: c.name.clone(), gender: c.gender };
+                let c = Competitor { id: c.id.clone(), name: c.name.clone(), gender: c.gender, competition_count: c.competition_count };
                 let data = c.to_json().to_string();
                 res.send(data);
             },
@@ -125,10 +126,10 @@ impl RequestHandler for RecordsHandler {
                     Ranking {
                         time: r.result.time,
                         competitor: CompetitorPartOfCollection {
-                            id: competitor.id.as_slice(),
-                            name: competitor.name.as_slice(),
+                            id: competitor.id.clone().as_slice(),
+                            name: competitor.name.clone().as_slice(),
                             gender: gender_to_str(&competitor.gender),
-                            country: competitor.country.as_slice(),
+                            country: competitor.country.clone().as_slice(),
                         }
                     }
                 }

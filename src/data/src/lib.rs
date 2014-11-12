@@ -48,6 +48,14 @@ pub mod wca_data {
         pub gender: Gender,
     }
 
+    pub struct Competitor {
+        pub id: WcaId,
+        pub name: String,
+        pub country: String,
+        pub gender: Gender,
+        pub competition_count: uint,
+    }
+
     #[deriving(Decodable)]
     struct Rank {
         person_id: WcaId,
@@ -152,8 +160,11 @@ pub mod wca_data {
             self.competitions.get(id).map(|set| set.len())
         }
 
-        pub fn find_competitor(&self, id: &String) -> Option<&Person> {
-            self.persons.get(id)
+        pub fn find_competitor(&self, id: &String) -> Option<Competitor> {
+            self.persons.get(id).map(|p|
+                Competitor { id: p.id.clone(), name: p.name.clone(), country: p.country.clone(), gender: p.gender, competition_count: 0 }
+            )
+
         }
 
         pub fn find_competitors(&self, query: &String) -> Vec<&Person> {
