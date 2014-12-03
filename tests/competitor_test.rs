@@ -12,14 +12,14 @@ fn setup_data() -> Box<WCA> {
 fn competitor_gender_female() {
     let w = setup_data();
     let c = w.find_competitor(&"1982FRID01".to_string()).unwrap();
-    assert!(c.gender == wca_data::Female);
+    assert!(c.gender == wca_data::Gender::Female);
 }
 
 #[test]
 fn competitor_gender_unknown() {
     let w = setup_data();
     let c = w.find_competitor(&"2014RODR25".to_string()).unwrap();
-    assert!(c.gender == wca_data::Unknown);
+    assert!(c.gender == wca_data::Gender::Unknown);
 }
 
 #[test]

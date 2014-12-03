@@ -33,7 +33,7 @@ fn average_records() {
 #[test]
 fn single_rankings() {
     let w = setup_data();
-    let ranks = w.find_rankings(&"333".to_string(), wca_data::Single).unwrap();
+    let ranks = w.find_rankings(&"333".to_string(), wca_data::ResultType::Single).unwrap();
     assert_eq!(ranks.len(), 4);
     assert_eq!(ranks.get(0).unwrap().result.time, 708u);
     assert_eq!(ranks.get(0).unwrap().competitor_id, "2005AKKE01".to_string());
@@ -44,7 +44,7 @@ fn single_rankings() {
     assert_eq!(ranks.get(3).unwrap().result.time, 4647);
     assert_eq!(ranks.get(3).unwrap().competitor_id, "2011RAHM01".to_string());
 
-    let ranks = w.find_rankings(&"444bf".to_string(), wca_data::Single).unwrap();
+    let ranks = w.find_rankings(&"444bf".to_string(), wca_data::ResultType::Single).unwrap();
     assert_eq!(ranks.len(), 1);
     assert_eq!(ranks.get(0).unwrap().competitor_id, "2005AKKE01".to_string());
 }
@@ -52,7 +52,7 @@ fn single_rankings() {
 #[test]
 fn average_rankings() {
     let w = setup_data();
-    let ranks = w.find_rankings(&"333".to_string(), wca_data::Average).unwrap();
+    let ranks = w.find_rankings(&"333".to_string(), wca_data::ResultType::Average).unwrap();
     assert_eq!(ranks.len(), 2);
     assert_eq!(ranks.get(0).unwrap().result.time, 931u);
     assert_eq!(ranks.get(0).unwrap().competitor_id, "2005AKKE01".to_string());

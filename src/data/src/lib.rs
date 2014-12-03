@@ -29,9 +29,9 @@ pub mod wca_data {
             match d.read_str() {
                 Ok(s) => {
                     match s.as_slice() {
-                        "m" => Ok(Male),
-                        "f" => Ok(Female),
-                        _   => Ok(Unknown),
+                        "m" => Ok(Gender::Male),
+                        "f" => Ok(Gender::Female),
+                        _   => Ok(Gender::Unknown),
                     }
                 }
                 Err(e) => Err(e),
@@ -174,8 +174,8 @@ pub mod wca_data {
 
         pub fn find_rankings(&self, puzzle_id: &String, result_type: ResultType) -> Option<&Vec<Ranking>> {
             match result_type {
-                Single  => self.single_rankings.get(puzzle_id),
-                Average => self.average_rankings.get(puzzle_id),
+                ResultType::Single  => self.single_rankings.get(puzzle_id),
+                ResultType::Average => self.average_rankings.get(puzzle_id),
             }
         }
 

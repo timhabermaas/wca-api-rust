@@ -4,5 +4,5 @@ name = "wca-data"
 version = "0.0.1"
 authors = ["Tim Habermaas"]
 
-[dependencies.rust-csv]
+[dependencies.csv]
 git = "git://github.com/BurntSushi/rust-csv"

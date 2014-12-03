@@ -9,8 +9,7 @@ use std::io::net::ip::Ipv4Addr;
 use nickel::{ Halt, Nickel, Request, QueryString, Response, HttpRouter, RequestHandler, MiddlewareResult };
 use w::wca_data;
 use std::collections::TreeMap;
-use serialize::json;
-use serialize::json::ToJson;
+use serialize::json::{mod, Json, ToJson};
 use http::status;
 use http::headers::content_type::MediaType;
 
@@ -59,20 +58,20 @@ struct Ranking<'a> {
 }
 
 impl ToJson for Competitor {
-    fn to_json(&self) -> json::Json {
+    fn to_json(&self) -> Json {
         let mut sub = TreeMap::new();
         sub.insert("id".to_string(), self.id.to_json());
         sub.insert("name".to_string(), self.name.to_json());
         let gender: Option<String> = match self.gender {
-            wca_data::Male   => Some("m".to_string()),
-            wca_data::Female => Some("f".to_string()),
-            _                => None,
+            wca_data::Gender::Male   => Some("m".to_string()),
+            wca_data::Gender::Female => Some("f".to_string()),
+            _                        => None,
         };
         sub.insert("gender".to_string(), gender.to_json());
 
         let mut d = TreeMap::new();
-        d.insert("competitor".to_string(), json::Object(sub));
-        json::Object(d)
+        d.insert("competitor".to_string(), Json::Object(sub));
+        Json::Object(d)
     }
 }
 
@@ -114,8 +113,8 @@ impl RequestHandler for RecordsHandler {
         let puzzle = req.param("puzzle_id");
         let type_   = req.param("type");
         let rankings = match type_ {
-            "single"  => self.data.find_rankings(&puzzle.to_string(), wca_data::Single),
-            "average" => self.data.find_rankings(&puzzle.to_string(), wca_data::Average),
+            "single"  => self.data.find_rankings(&puzzle.to_string(), wca_data::ResultType::Single),
+            "average" => self.data.find_rankings(&puzzle.to_string(), wca_data::ResultType::Average),
             _         => { res.status_code(status::NotFound); return Ok(Halt); }
         };
         match rankings {
@@ -147,8 +146,8 @@ impl RequestHandler for RecordsHandler {
 
 fn gender_to_str(gender: &wca_data::Gender) -> &str {
     match gender {
-        &wca_data::Male   => "m",
-        &wca_data::Female => "f",
+        &wca_data::Gender::Male   => "m",
+        &wca_data::Gender::Female => "f",
         _                 => "",
     }
 }
