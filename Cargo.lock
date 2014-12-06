@@ -13,13 +13,13 @@ source = "git+https://github.com/nickel-org/anymap.git#15cad51ac750ea5209d588237
 
 [[package]]
 name = "csv"
-version = "0.7.0"
-source = "git+git://github.com/BurntSushi/rust-csv#4b8525835c03aef521edeec47f5f89d4ef355a20"
+version = "0.7.1"
+source = "git+git://github.com/BurntSushi/rust-csv#5416ec612250ec14845d7e7b430ef8a26084df23"
 
 [[package]]
 name = "encoding"
-version = "0.2.4"
-source = "git+https://github.com/lifthrasiir/rust-encoding#46b4154264ad0c6034b29d36b250bed65f3c4328"
+version = "0.2.5"
+source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
 dependencies = [
  "encoding-index-japanese 1.0.20140915 (git+https://github.com/lifthrasiir/rust-encoding)",
  "encoding-index-korean 1.0.20140915 (git+https://github.com/lifthrasiir/rust-encoding)",
@@ -31,7 +31,7 @@ dependencies = [
 [[package]]
 name = "encoding-index-japanese"
 version = "1.0.20140915"
-source = "git+https://github.com/lifthrasiir/rust-encoding#46b4154264ad0c6034b29d36b250bed65f3c4328"
+source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
 dependencies = [
  "encoding_index_tests 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
 ]
@@ -39,7 +39,7 @@ dependencies = [
 [[package]]
 name = "encoding-index-korean"
 version = "1.0.20140915"
-source = "git+https://github.com/lifthrasiir/rust-encoding#46b4154264ad0c6034b29d36b250bed65f3c4328"
+source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
 dependencies = [
  "encoding_index_tests 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
 ]
@@ -47,7 +47,7 @@ dependencies = [
 [[package]]
 name = "encoding-index-simpchinese"
 version = "1.0.20140915"
-source = "git+https://github.com/lifthrasiir/rust-encoding#46b4154264ad0c6034b29d36b250bed65f3c4328"
+source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
 dependencies = [
  "encoding_index_tests 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
 ]
@@ -55,7 +55,7 @@ dependencies = [
 [[package]]
 name = "encoding-index-singlebyte"
 version = "1.0.20140915"
-source = "git+https://github.com/lifthrasiir/rust-encoding#46b4154264ad0c6034b29d36b250bed65f3c4328"
+source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
 dependencies = [
  "encoding_index_tests 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
 ]
@@ -63,7 +63,7 @@ dependencies = [
 [[package]]
 name = "encoding-index-tradchinese"
 version = "1.0.20140915"
-source = "git+https://github.com/lifthrasiir/rust-encoding#46b4154264ad0c6034b29d36b250bed65f3c4328"
+source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
 dependencies = [
  "encoding_index_tests 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
 ]
@@ -71,12 +71,12 @@ dependencies = [
 [[package]]
 name = "encoding_index_tests"
 version = "0.1.0"
-source = "git+https://github.com/lifthrasiir/rust-encoding#46b4154264ad0c6034b29d36b250bed65f3c4328"
+source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
 
 [[package]]
 name = "gcc"
 version = "0.1.0"
-source = "git+https://github.com/alexcrichton/gcc-rs#d32b24466d3e0094cef1c1809a04d7a28536f0e0"
+source = "git+https://github.com/alexcrichton/gcc-rs#6b60df5cec47c6e74d8f86a1216e202268727a72"
 
 [[package]]
 name = "groupable"
@@ -115,7 +115,7 @@ source = "git+https://github.com/nickel-org/nickel.rs.git#42fb537a1136b092e7ddd3
 [[package]]
 name = "openssl"
 version = "0.2.2"
-source = "git+https://github.com/sfackler/rust-openssl.git#fd680e8a336f8870a411a3047c45b47ee72beb37"
+source = "git+https://github.com/sfackler/rust-openssl.git#b8a41f79a1a78791dddd453db0aab5f0957152fc"
 dependencies = [
  "openssl-sys 0.2.2 (git+https://github.com/sfackler/rust-openssl.git)",
 ]
@@ -123,7 +123,7 @@ dependencies = [
 [[package]]
 name = "openssl-sys"
 version = "0.2.2"
-source = "git+https://github.com/sfackler/rust-openssl.git#fd680e8a336f8870a411a3047c45b47ee72beb37"
+source = "git+https://github.com/sfackler/rust-openssl.git#b8a41f79a1a78791dddd453db0aab5f0957152fc"
 dependencies = [
  "pkg-config 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -141,7 +141,7 @@ source = "git+https://github.com/nickel-org/rust-mustache.git#6f98a76ba46068f04c
 [[package]]
 name = "time"
 version = "0.1.0"
-source = "git+https://github.com/rust-lang/time#afab521f3b91658a3ba2d3e877b7e01699733bef"
+source = "git+https://github.com/rust-lang/time#b8e219aa9fca15ed1377a7d62aff1eb4378f3ba4"
 dependencies = [
  "gcc 0.1.0 (git+https://github.com/alexcrichton/gcc-rs)",
 ]
@@ -151,13 +151,13 @@ name = "url"
 version = "0.1.0"
 source = "git+https://github.com/nickel-org/rust-url.git#5d15bee2d296b0fc3cfae84e69d1d2e865cf9335"
 dependencies = [
- "encoding 0.2.4 (git+https://github.com/lifthrasiir/rust-encoding)",
+ "encoding 0.2.5 (git+https://github.com/lifthrasiir/rust-encoding)",
 ]
 
 [[package]]
 name = "wca-data"
 version = "0.0.1"
 dependencies = [
- "csv 0.7.0 (git+git://github.com/BurntSushi/rust-csv)",
+ "csv 0.7.1 (git+git://github.com/BurntSushi/rust-csv)",
 ]
 

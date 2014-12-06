@@ -41,6 +41,7 @@ struct Competitor {
     id: String,
     name: String,
     gender: wca_data::Gender,
+    competitionCount: uint,
 }
 
 #[deriving(Encodable, PartialEq)]
@@ -62,6 +63,7 @@ impl ToJson for Competitor {
         let mut sub = TreeMap::new();
         sub.insert("id".to_string(), self.id.to_json());
         sub.insert("name".to_string(), self.name.to_json());
+        sub.insert("competition_count".to_string(), self.competitionCount.to_json());
         let gender: Option<String> = match self.gender {
             wca_data::Gender::Male   => Some("m".to_string()),
             wca_data::Gender::Female => Some("f".to_string()),
@@ -89,7 +91,7 @@ impl RequestHandler for CompetitorHandler {
 
         match result {
             Some(c) => {
-                let c = Competitor { id: c.id.clone(), name: c.name.clone(), gender: c.gender };
+                let c = Competitor { id: c.id.clone(), name: c.name.clone(), gender: c.gender, competitionCount: self.data.number_of_comps(&id.to_string()).unwrap() };
                 let data = c.to_json().to_string();
                 res.send(data);
             },
