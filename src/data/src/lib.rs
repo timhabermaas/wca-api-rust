@@ -118,9 +118,14 @@ pub mod wca_data {
             }
             let set = self.competitions.get_mut(&id).unwrap();
             set.insert(comp_id);
-            match self.persons.get_mut(&id) {
-                Some(v) => { v.competition_count = set.len(); },
-                None    => { },
+        }
+
+        fn update_competition_count_cache(&mut self) {
+            for (id, competitor) in self.persons.iter_mut() {
+                match self.competitions.get(id) {
+                    Some(set) => { competitor.competition_count = set.len(); },
+                    None      => { },
+                }
             }
         }
 
@@ -216,6 +221,7 @@ pub mod wca_data {
             load_single_records(&mut *w, records_single_path);
             load_average_records(&mut *w, records_average_path);
             load_events(&mut *w, events_path);
+            w.update_competition_count_cache();
             w
         }
     }
