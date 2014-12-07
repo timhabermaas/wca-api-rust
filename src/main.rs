@@ -41,7 +41,7 @@ struct Competitor {
     id: String,
     name: String,
     gender: wca_data::Gender,
-    competitionCount: uint,
+    competition_count: uint,
 }
 
 #[deriving(Encodable, PartialEq)]
@@ -50,6 +50,7 @@ struct CompetitorPartOfCollection<'a> {
     name: &'a str,
     gender: &'a str,
     country: &'a str,
+    competition_count: uint,
 }
 
 #[deriving(Encodable)]
@@ -63,7 +64,7 @@ impl ToJson for Competitor {
         let mut sub = TreeMap::new();
         sub.insert("id".to_string(), self.id.to_json());
         sub.insert("name".to_string(), self.name.to_json());
-        sub.insert("competition_count".to_string(), self.competitionCount.to_json());
+        sub.insert("competition_count".to_string(), self.competition_count.to_json());
         let gender: Option<String> = match self.gender {
             wca_data::Gender::Male   => Some("m".to_string()),
             wca_data::Gender::Female => Some("f".to_string()),
@@ -91,7 +92,7 @@ impl RequestHandler for CompetitorHandler {
 
         match result {
             Some(c) => {
-                let c = Competitor { id: c.id.clone(), name: c.name.clone(), gender: c.gender, competitionCount: self.data.number_of_comps(&id.to_string()).unwrap() };
+                let c = Competitor { id: c.id.clone(), name: c.name.clone(), gender: c.gender, competition_count: c.competition_count };
                 let data = c.to_json().to_string();
                 res.send(data);
             },
@@ -130,6 +131,7 @@ impl RequestHandler for RecordsHandler {
                             name: competitor.name.as_slice(),
                             gender: gender_to_str(&competitor.gender),
                             country: competitor.country.as_slice(),
+                            competition_count: competitor.competition_count,
                         }
                     }
                 }
@@ -159,7 +161,7 @@ impl RequestHandler for CompetitorSearchHandler {
         let q = req.query("q", "default");
         let m = q.get(0).unwrap();
         let competitors = self.data.find_competitors(m);
-        let competitors: Vec<CompetitorPartOfCollection> = competitors.iter().map(|c| CompetitorPartOfCollection { id: c.id.as_slice(), name: c.name.as_slice(), gender: gender_to_str(&c.gender), country: c.country.as_slice() }).collect();
+        let competitors: Vec<CompetitorPartOfCollection> = competitors.iter().map(|c| CompetitorPartOfCollection { id: c.id.as_slice(), name: c.name.as_slice(), gender: gender_to_str(&c.gender), country: c.country.as_slice(), competition_count: c.competition_count }).collect();
         let mut wrapped_competitors: TreeMap<String, &Vec<CompetitorPartOfCollection>> = TreeMap::new();
         wrapped_competitors.insert("competitors".to_string(), &competitors);
 

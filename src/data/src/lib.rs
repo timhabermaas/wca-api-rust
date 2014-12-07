@@ -40,12 +40,20 @@ pub mod wca_data {
     }
 
     #[deriving(Decodable)]
-    pub struct Person {
-        pub id: WcaId,
+    struct Person {
+        id: WcaId,
         subid: int,
+        name: String,
+        country: String,
+        gender: Gender,
+    }
+
+    pub struct Competitor {
+        pub id: WcaId,
         pub name: String,
         pub country: String,
         pub gender: Gender,
+        pub competition_count: uint,
     }
 
     #[deriving(Decodable)]
@@ -83,7 +91,7 @@ pub mod wca_data {
     }
 
     pub struct WCA {
-        pub persons: TreeMap<WcaId, Person>,
+        pub persons: TreeMap<WcaId, Competitor>,
         competitions: HashMap<WcaId, HashSet<String>>,
         records: HashMap<String, HashMap<String, Record>>,
         single_rankings: HashMap<PuzzleId, Vec<Ranking>>,
@@ -99,7 +107,8 @@ pub mod wca_data {
 
     impl WCA {
         fn insert_person(&mut self, person: Person) {
-            self.persons.insert(person.id.clone(), person);
+            let c = Competitor { id: person.id, name: person.name, gender: person.gender, country: person.country, competition_count: 0 };
+            self.persons.insert(c.id.clone(), c);
         }
 
         fn visited_comp(&mut self, id: String, comp_id: String) {
@@ -109,6 +118,10 @@ pub mod wca_data {
             }
             let set = self.competitions.get_mut(&id).unwrap();
             set.insert(comp_id);
+            match self.persons.get_mut(&id) {
+                Some(v) => { v.competition_count = set.len(); },
+                None    => { },
+            }
         }
 
         fn add_single_record(&mut self, id: String, puzzle: String, time: uint) {
@@ -152,11 +165,11 @@ pub mod wca_data {
             self.competitions.get(id).map(|set| set.len())
         }
 
-        pub fn find_competitor(&self, id: &String) -> Option<&Person> {
+        pub fn find_competitor(&self, id: &String) -> Option<&Competitor> {
             self.persons.get(id)
         }
 
-        pub fn find_competitors(&self, query: &String) -> Vec<&Person> {
+        pub fn find_competitors(&self, query: &String) -> Vec<&Competitor> {
             self.persons
                 .lower_bound(query)
                 .take_while(|t| t.val0().starts_with(query.as_slice()))

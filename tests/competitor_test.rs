@@ -27,6 +27,8 @@ fn competition_count() {
     let w = setup_data();
     let count = w.number_of_comps(&"1982RAZO01".to_string()).unwrap();
     assert_eq!(count, 3u);
+    let c = w.find_competitor(&"1982FRID01".to_string()).unwrap();
+    assert!(c.competition_count == 2);
 }
 
 #[test]
