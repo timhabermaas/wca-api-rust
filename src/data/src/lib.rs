@@ -1,18 +1,20 @@
-extern crate serialize;
+extern crate "rustc-serialize" as rustc_serialize;
+extern crate csv;
 
 pub mod wca_data {
-    extern crate csv;
-
+    use csv;
     use std::collections::HashMap;
-    use std::collections::TreeMap;
+    use std::collections::BTreeMap;
     use std::collections::HashSet;
-    use serialize::Decoder;
-    use serialize::Decodable;
+    use std::collections::Bound::{Included, Unbounded};
+    use rustc_serialize::Decodable;
+    use rustc_serialize::Decoder;
     use std::path::Path;
+
     pub type WcaId = String;
     pub type PuzzleId = String;
 
-    #[deriving(PartialEq)]
+    #[derive(PartialEq, Clone)]
     pub enum Gender {
         Male,
         Female,
@@ -24,8 +26,8 @@ pub mod wca_data {
         Average,
     }
 
-    impl<E, D: Decoder<E>> Decodable<D, E> for Gender {
-        fn decode(d: &mut D) -> Result<Gender, E> {
+    impl Decodable for Gender {
+        fn decode<D: Decoder>(d: &mut D) -> Result<Gender, D::Error> {
             match d.read_str() {
                 Ok(s) => {
                     match s.as_slice() {
@@ -39,7 +41,7 @@ pub mod wca_data {
         }
     }
 
-    #[deriving(Decodable)]
+    #[derive(RustcDecodable)]
     struct Person {
         id: WcaId,
         subid: int,
@@ -56,7 +58,7 @@ pub mod wca_data {
         pub competition_count: uint,
     }
 
-    #[deriving(Decodable)]
+    #[derive(RustcDecodable)]
     struct Rank {
         person_id: WcaId,
         event_id: String,
@@ -72,18 +74,18 @@ pub mod wca_data {
     }
 
     // TODO add puzzle enum
-    #[deriving(Decodable, Encodable)]
+    #[derive(RustcDecodable, RustcEncodable, Clone)]
     pub struct CompResult {
         pub time: uint,
     }
 
-    #[deriving(Decodable, Encodable)]
+    #[derive(RustcDecodable, RustcEncodable, Clone)]
     pub struct Record {
         pub single: CompResult,
         pub average: Option<CompResult>,
     }
 
-    #[deriving(Encodable)]
+    #[derive(RustcEncodable)]
     pub struct RecordWithCompetitor {
         pub competitor_id: String,
         pub single: CompResult,
@@ -91,7 +93,7 @@ pub mod wca_data {
     }
 
     pub struct WCA {
-        pub persons: TreeMap<WcaId, Competitor>,
+        pub persons: BTreeMap<WcaId, Competitor>,
         competitions: HashMap<WcaId, HashSet<String>>,
         records: HashMap<String, HashMap<String, Record>>,
         single_rankings: HashMap<PuzzleId, Vec<Ranking>>,
@@ -99,7 +101,7 @@ pub mod wca_data {
         events: Vec<Event>,
     }
 
-    #[deriving(Decodable, Encodable)]
+    #[derive(RustcDecodable, RustcEncodable)]
     pub struct Event {
         pub id: String,
         pub name: String,
@@ -160,10 +162,16 @@ pub mod wca_data {
             // This assumes that
             // a) Adding single records have been executed first.
             // b) For every average record exists one single record.
-            let mut records = self.records.get_mut(&id).unwrap();
-            let &mut record = records.get_mut(&puzzle).unwrap();
 
-            records.insert(puzzle, Record { single: record.single, average: Some(CompResult{time: time}) });
+            // FIXME this exists to hack around borrow checker
+            let mut record = Record { single: CompResult {time: 2u}, average: None };
+
+            {
+                let records = self.records.get(&id).unwrap();
+                record = records.get(&puzzle).unwrap().clone();
+            }
+
+            self.records.get_mut(&id).unwrap().insert(puzzle, Record { single: record.clone().single, average: Some(CompResult{time: time}) });
         }
 
         pub fn number_of_comps(&self, id: &String) -> Option<uint> {
@@ -176,9 +184,9 @@ pub mod wca_data {
 
         pub fn find_competitors(&self, query: &String) -> Vec<&Competitor> {
             self.persons
-                .lower_bound(query)
-                .take_while(|t| t.val0().starts_with(query.as_slice()))
-                .map(|t| t.val1())
+                .range(Included(query), Unbounded)
+                .take_while(|t| t.0.starts_with(query.as_slice()))
+                .map(|t| t.1)
                 .collect()
         }
 
@@ -202,7 +210,7 @@ pub mod wca_data {
                 self.find_records(id).map(|r|{
                     let record = r.get(puzzle_id);
                     match record {
-                        Some(r) => Some(RecordWithCompetitor { single: r.single, average: r.average, competitor_id: id.to_string() }),
+                        Some(r) => Some(RecordWithCompetitor { single: r.clone().single, average: r.clone().average, competitor_id: id.to_string() }),
                         None => None,
                     }
                 }).unwrap_or_else(|| None)
@@ -215,7 +223,7 @@ pub mod wca_data {
         }
 
         pub fn new(persons_path: &Path, results_path: &Path, records_single_path: &Path, records_average_path: &Path, events_path: &Path) -> Box<WCA> {
-            let mut w = box WCA { persons: TreeMap::new(), competitions: HashMap::new(), records: HashMap::new(), single_rankings: HashMap::new(), average_rankings: HashMap::new(), events: Vec::new() };
+            let mut w = Box::new(WCA { persons: BTreeMap::new(), competitions: HashMap::new(), records: HashMap::new(), single_rankings: HashMap::new(), average_rankings: HashMap::new(), events: Vec::new() });
             load_persons(&mut *w, persons_path);
             load_competitions(&mut *w, results_path);
             load_single_records(&mut *w, records_single_path);
@@ -230,8 +238,8 @@ pub mod wca_data {
         let mut rdr = csv::Reader::from_file(fp).has_headers(true).delimiter(b'\t');
 
         for record in rdr.decode() {
-            let r: Person = record.unwrap();
-            w.insert_person(r);
+            let record: Person = record.unwrap();
+            w.insert_person(record);
         }
     }
 

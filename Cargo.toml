@@ -4,8 +4,14 @@ name = "wca-api-rust"
 version = "0.0.1"
 authors = ["Tim Habermaas"]
 
+[dependencies]
+rustc-serialize = "0.2"
+
 [dependencies.nickel]
 git = "https://github.com/nickel-org/nickel.rs.git"
 
 [dependencies.wca-data]
 path = "src/data"
+
+[dependencies.http]
+git = "https://github.com/nickel-org/rust-http.git"

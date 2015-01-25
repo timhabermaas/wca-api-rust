@@ -4,5 +4,6 @@ name = "wca-data"
 version = "0.0.1"
 authors = ["Tim Habermaas"]
 
-[dependencies.csv]
-git = "git://github.com/BurntSushi/rust-csv"
+[dependencies]
+rustc-serialize = "0.2"
+csv = "0.12"

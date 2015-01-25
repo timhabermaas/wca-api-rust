@@ -2,162 +2,187 @@
 name = "wca-api-rust"
 version = "0.0.1"
 dependencies = [
+ "http 0.1.0-pre (git+https://github.com/nickel-org/rust-http.git)",
  "nickel 0.1.0 (git+https://github.com/nickel-org/nickel.rs.git)",
+ "rustc-serialize 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "wca-data 0.0.1",
 ]
 
 [[package]]
 name = "anymap"
-version = "0.9.0"
-source = "git+https://github.com/nickel-org/anymap.git#15cad51ac750ea5209d5882379a055f9b8057720"
+version = "0.9.9"
+source = "git+https://github.com/nickel-org/anymap.git#26ca567814442053601fe8692b872fe8fefc577f"
 
 [[package]]
 name = "csv"
-version = "0.7.1"
-source = "git+git://github.com/BurntSushi/rust-csv#5416ec612250ec14845d7e7b430ef8a26084df23"
-
-[[package]]
-name = "encoding"
-version = "0.2.5"
-source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
+version = "0.12.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "encoding-index-japanese 1.0.20140915 (git+https://github.com/lifthrasiir/rust-encoding)",
- "encoding-index-korean 1.0.20140915 (git+https://github.com/lifthrasiir/rust-encoding)",
- "encoding-index-simpchinese 1.0.20140915 (git+https://github.com/lifthrasiir/rust-encoding)",
- "encoding-index-singlebyte 1.0.20140915 (git+https://github.com/lifthrasiir/rust-encoding)",
- "encoding-index-tradchinese 1.0.20140915 (git+https://github.com/lifthrasiir/rust-encoding)",
+ "rustc-serialize 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
-
-[[package]]
-name = "encoding-index-japanese"
-version = "1.0.20140915"
-source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
-dependencies = [
- "encoding_index_tests 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
-]
-
-[[package]]
-name = "encoding-index-korean"
-version = "1.0.20140915"
-source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
-dependencies = [
- "encoding_index_tests 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
-]
-
-[[package]]
-name = "encoding-index-simpchinese"
-version = "1.0.20140915"
-source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
-dependencies = [
- "encoding_index_tests 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
-]
-
-[[package]]
-name = "encoding-index-singlebyte"
-version = "1.0.20140915"
-source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
-dependencies = [
- "encoding_index_tests 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
-]
-
-[[package]]
-name = "encoding-index-tradchinese"
-version = "1.0.20140915"
-source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
-dependencies = [
- "encoding_index_tests 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
-]
-
-[[package]]
-name = "encoding_index_tests"
-version = "0.1.0"
-source = "git+https://github.com/lifthrasiir/rust-encoding#210beb5e37649b7136d27069c1f1b36a513fa76a"
 
 [[package]]
 name = "gcc"
-version = "0.1.0"
-source = "git+https://github.com/alexcrichton/gcc-rs#6b60df5cec47c6e74d8f86a1216e202268727a72"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "groupable"
 version = "0.1.0"
-source = "git+https://github.com/nickel-org/groupable-rs#74c9e38ede02008fc04c47a33c4ba9b995dc3606"
+source = "git+https://github.com/nickel-org/groupable-rs#efc8d769f611558f086322cd8d2d5ff53314e435"
 
 [[package]]
 name = "http"
 version = "0.1.0-pre"
-source = "git+https://github.com/nickel-org/rust-http.git#2d2b9784b74ca78d6a7918a14a79bea8b7094ed8"
+source = "git+https://github.com/nickel-org/rust-http.git#1605a5163fe87c189d45913caa33f0e9e6bade48"
 dependencies = [
- "openssl 0.2.2 (git+https://github.com/sfackler/rust-openssl.git)",
- "time 0.1.0 (git+https://github.com/rust-lang/time)",
- "url 0.1.0 (git+https://github.com/nickel-org/rust-url.git)",
+ "openssl 0.2.18 (git+https://github.com/sfackler/rust-openssl.git)",
+ "time 0.1.15 (git+https://github.com/rust-lang/time)",
+ "url 0.2.17 (git+https://github.com/nickel-org/rust-url.git)",
 ]
+
+[[package]]
+name = "libc"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "libressl-pnacl-sys"
+version = "2.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "pnacl-build-helper 1.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "matches"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "nickel"
 version = "0.1.0"
-source = "git+https://github.com/nickel-org/nickel.rs.git#42fb537a1136b092e7ddd3b1b6b9e613fe21972c"
+source = "git+https://github.com/nickel-org/nickel.rs.git#f14aadb03b786aa175c38e8f8e76621da4489835"
 dependencies = [
- "anymap 0.9.0 (git+https://github.com/nickel-org/anymap.git)",
+ "anymap 0.9.9 (git+https://github.com/nickel-org/anymap.git)",
  "groupable 0.1.0 (git+https://github.com/nickel-org/groupable-rs)",
  "http 0.1.0-pre (git+https://github.com/nickel-org/rust-http.git)",
  "nickel_macros 0.0.1 (git+https://github.com/nickel-org/nickel.rs.git)",
+ "plugin 0.2.0 (git+https://github.com/reem/rust-plugin)",
+ "regex 0.1.11 (registry+https://github.com/rust-lang/crates.io-index)",
+ "regex_macros 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "rust-mustache 0.3.0 (git+https://github.com/nickel-org/rust-mustache.git)",
- "time 0.1.0 (git+https://github.com/rust-lang/time)",
- "url 0.1.0 (git+https://github.com/nickel-org/rust-url.git)",
+ "time 0.1.15 (git+https://github.com/rust-lang/time)",
+ "typemap 0.0.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "url 0.2.17 (git+https://github.com/nickel-org/rust-url.git)",
 ]
 
 [[package]]
 name = "nickel_macros"
 version = "0.0.1"
-source = "git+https://github.com/nickel-org/nickel.rs.git#42fb537a1136b092e7ddd3b1b6b9e613fe21972c"
+source = "git+https://github.com/nickel-org/nickel.rs.git#f14aadb03b786aa175c38e8f8e76621da4489835"
 
 [[package]]
 name = "openssl"
-version = "0.2.2"
-source = "git+https://github.com/sfackler/rust-openssl.git#b8a41f79a1a78791dddd453db0aab5f0957152fc"
+version = "0.2.18"
+source = "git+https://github.com/sfackler/rust-openssl.git#8b47daae66db425574fe85a687a7a09966feb1b3"
 dependencies = [
- "openssl-sys 0.2.2 (git+https://github.com/sfackler/rust-openssl.git)",
+ "openssl-sys 0.2.18 (git+https://github.com/sfackler/rust-openssl.git)",
 ]
 
 [[package]]
 name = "openssl-sys"
-version = "0.2.2"
-source = "git+https://github.com/sfackler/rust-openssl.git#b8a41f79a1a78791dddd453db0aab5f0957152fc"
+version = "0.2.18"
+source = "git+https://github.com/sfackler/rust-openssl.git#8b47daae66db425574fe85a687a7a09966feb1b3"
 dependencies = [
- "pkg-config 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libressl-pnacl-sys 2.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pkg-config 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
-name = "pkg-config"
-version = "0.1.0"
+name = "phantom"
+version = "0.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "pkg-config"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "plugin"
+version = "0.2.0"
+source = "git+https://github.com/reem/rust-plugin#fea209785ef6d9662374897287dfe509af934141"
+dependencies = [
+ "phantom 0.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "typemap 0.0.8 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "pnacl-build-helper"
+version = "1.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "regex"
+version = "0.1.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "regex_macros"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "regex 0.1.11 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "rust-mustache"
 version = "0.3.0"
-source = "git+https://github.com/nickel-org/rust-mustache.git#6f98a76ba46068f04c14b942a182e29eea24350e"
+source = "git+https://github.com/nickel-org/rust-mustache.git#274b1b9b8159cae4f993a1b9383f911ca0128827"
+
+[[package]]
+name = "rustc-serialize"
+version = "0.2.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "time"
-version = "0.1.0"
-source = "git+https://github.com/rust-lang/time#b8e219aa9fca15ed1377a7d62aff1eb4378f3ba4"
+version = "0.1.15"
+source = "git+https://github.com/rust-lang/time#e216d0de7377a1ae5c8617f6e1a9f60dc61d7ec7"
 dependencies = [
- "gcc 0.1.0 (git+https://github.com/alexcrichton/gcc-rs)",
+ "gcc 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
-name = "url"
-version = "0.1.0"
-source = "git+https://github.com/nickel-org/rust-url.git#5d15bee2d296b0fc3cfae84e69d1d2e865cf9335"
+name = "typemap"
+version = "0.0.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "encoding 0.2.5 (git+https://github.com/lifthrasiir/rust-encoding)",
+ "phantom 0.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "unsafe-any 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "unsafe-any"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "url"
+version = "0.2.17"
+source = "git+https://github.com/nickel-org/rust-url.git#cc82fe74d77d0d97a6927f5c67c21b19bd550048"
+dependencies = [
+ "matches 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rustc-serialize 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "wca-data"
 version = "0.0.1"
 dependencies = [
- "csv 0.7.1 (git+git://github.com/BurntSushi/rust-csv)",
+ "csv 0.12.11 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rustc-serialize 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
