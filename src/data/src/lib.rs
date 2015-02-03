@@ -14,13 +14,14 @@ pub mod wca_data {
     pub type WcaId = String;
     pub type PuzzleId = String;
 
-    #[derive(PartialEq, Clone)]
+    #[derive(PartialEq, Clone, Copy)]
     pub enum Gender {
         Male,
         Female,
         Unknown,
     }
 
+    #[derive(Copy)]
     pub enum ResultType {
         Single,
         Average,
@@ -44,7 +45,7 @@ pub mod wca_data {
     #[derive(RustcDecodable)]
     struct Person {
         id: WcaId,
-        subid: int,
+        subid: i32,
         name: String,
         country: String,
         gender: Gender,
@@ -55,17 +56,17 @@ pub mod wca_data {
         pub name: String,
         pub country: String,
         pub gender: Gender,
-        pub competition_count: uint,
+        pub competition_count: u32,
     }
 
     #[derive(RustcDecodable)]
     struct Rank {
         person_id: WcaId,
         event_id: String,
-        best: uint,
-        world_rank: uint,
-        continent_rank: uint,
-        country_rank: uint,
+        best: u32,
+        world_rank: u32,
+        continent_rank: u32,
+        country_rank: u32,
     }
 
     pub struct Ranking {
@@ -74,9 +75,9 @@ pub mod wca_data {
     }
 
     // TODO add puzzle enum
-    #[derive(RustcDecodable, RustcEncodable, Clone)]
+    #[derive(RustcDecodable, RustcEncodable, Clone, Copy)]
     pub struct CompResult {
-        pub time: uint,
+        pub time: u32,
     }
 
     #[derive(RustcDecodable, RustcEncodable, Clone)]
@@ -125,13 +126,13 @@ pub mod wca_data {
         fn update_competition_count_cache(&mut self) {
             for (id, competitor) in self.persons.iter_mut() {
                 match self.competitions.get(id) {
-                    Some(set) => { competitor.competition_count = set.len(); },
+                    Some(set) => { competitor.competition_count = set.len() as u32; },
                     None      => { },
                 }
             }
         }
 
-        fn add_single_record(&mut self, id: String, puzzle: String, time: uint) {
+        fn add_single_record(&mut self, id: String, puzzle: String, time: u32) {
             if self.records.contains_key(&id.clone()) {
             } else {
                 self.records.insert(id.clone(), HashMap::new());
@@ -140,7 +141,7 @@ pub mod wca_data {
             map.insert(puzzle, Record{single: CompResult{time: time}, average: None});
         }
 
-        fn add_single_ranking(&mut self, puzzle_id: String, best: uint, competitor_id: String) {
+        fn add_single_ranking(&mut self, puzzle_id: String, best: u32, competitor_id: String) {
             if self.single_rankings.contains_key(&puzzle_id) {
             } else {
                 self.single_rankings.insert(puzzle_id.clone(), vec![]);
@@ -149,7 +150,7 @@ pub mod wca_data {
             vec.push(Ranking { result: CompResult {time: best}, competitor_id: competitor_id.clone()});
         }
 
-        fn add_average_ranking(&mut self, puzzle_id: String, best: uint, competitor_id: String) {
+        fn add_average_ranking(&mut self, puzzle_id: String, best: u32, competitor_id: String) {
             if self.average_rankings.contains_key(&puzzle_id) {
             } else {
                 self.average_rankings.insert(puzzle_id.clone(), vec![]);
@@ -158,13 +159,13 @@ pub mod wca_data {
             vec.push(Ranking { result: CompResult {time: best}, competitor_id: competitor_id.clone()});
         }
 
-        fn add_average_record(&mut self, id: String, puzzle: String, time: uint) {
+        fn add_average_record(&mut self, id: String, puzzle: String, time: u32) {
             // This assumes that
             // a) Adding single records have been executed first.
             // b) For every average record exists one single record.
 
             // FIXME this exists to hack around borrow checker
-            let mut record = Record { single: CompResult {time: 2u}, average: None };
+            let mut record;
 
             {
                 let records = self.records.get(&id).unwrap();
@@ -174,7 +175,7 @@ pub mod wca_data {
             self.records.get_mut(&id).unwrap().insert(puzzle, Record { single: record.clone().single, average: Some(CompResult{time: time}) });
         }
 
-        pub fn number_of_comps(&self, id: &String) -> Option<uint> {
+        pub fn number_of_comps(&self, id: &String) -> Option<usize> {
             self.competitions.get(id).map(|set| set.len())
         }
 

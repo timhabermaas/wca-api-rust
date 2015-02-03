@@ -9,7 +9,8 @@ use std::old_io::net::ip::Ipv4Addr;
 use nickel::{ Halt, Nickel, Request, QueryString, Response, HttpRouter, Middleware, MiddlewareResult };
 use w::wca_data;
 use std::collections::BTreeMap;
-use rustc_serialize::json::{mod, Json, ToJson};
+use rustc_serialize::json;
+use rustc_serialize::json::{Json, ToJson};
 use http::status;
 use http::headers::content_type::MediaType;
 
@@ -41,7 +42,7 @@ struct Competitor {
     id: String,
     name: String,
     gender: wca_data::Gender,
-    competition_count: uint,
+    competition_count: u32,
 }
 
 #[derive(RustcEncodable, PartialEq)]
@@ -50,12 +51,12 @@ struct CompetitorPartOfCollection<'a> {
     name: &'a str,
     gender: &'a str,
     country: &'a str,
-    competition_count: uint,
+    competition_count: u32,
 }
 
 #[derive(RustcEncodable)]
 struct Ranking<'a> {
-    time: uint,
+    time: u32,
     competitor: CompetitorPartOfCollection<'a>,
 }
 
@@ -215,7 +216,7 @@ impl Middleware for SelectiveRecordsHandler {
                                                               vec![("charset".to_string(),
                                                               "utf8".to_string())]));
 
-        let mut puzzle_id = String::new();
+        let mut puzzle_id;
         {
             let req2 = &req;
             puzzle_id = req2.param("puzzle_id").to_string();
