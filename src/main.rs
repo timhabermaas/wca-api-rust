@@ -166,6 +166,12 @@ impl Handler for RecordsHandler {
     }
 }
 
+impl Handler for EventsHandler {
+    fn handle(&self, _: &mut Request) -> IronResult<Response> {
+        Ok(Response::with((status::Ok, json::encode(self.data.find_events()).unwrap())))
+    }
+}
+
 // TODO add Middleware for setting JSON response and UTF-8 encoding
 
 fn main() {
@@ -185,6 +191,7 @@ fn main() {
     router.get("/competitors/:id", CompetitorHandler { data: w_arc.clone() });
     router.get("/competitors/:id/records", CompetitorRecordsHandler { data: w_arc.clone() });
     router.get("/records/:puzzle_id/:type", RecordsHandler { data: w_arc.clone() });
+    router.get("/events", EventsHandler { data: w_arc.clone() });
 
     Iron::new(router).listen("localhost:3000").unwrap();
 }
