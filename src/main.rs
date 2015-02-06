@@ -105,7 +105,7 @@ impl Handler for CompetitorHandler {
 impl Handler for CompetitorSearchHandler {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         // TODO use a proper way to parse query strings
-        let query = req.url.clone().query.unwrap();
+        let query = req.url.query.clone().unwrap();
         let q = &query[2..query.len()];
 
         let competitors = self.data.find_competitors(&q.to_string());
@@ -174,6 +174,19 @@ impl Handler for EventsHandler {
     }
 }
 
+impl Handler for SelectiveRecordsHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let ref puzzle_id = req.extensions.get::<Router>().unwrap().find("puzzle_id").unwrap();
+        // parsing of ids= query parameters
+        let foo = req.url.query.clone().unwrap();
+        let ids: Vec<String> = foo.split('&').map(|param| (&param[4..param.len()]).to_string()).collect();
+
+        let records = self.data.find_rankings_for(&puzzle_id.to_string(), ids);
+        Ok(Response::with((status::Ok, json::encode(&records).unwrap())))
+    }
+
+}
+
 struct JSONAcceptHeaderMiddleware;
 
 impl AfterMiddleware for JSONAcceptHeaderMiddleware {
@@ -202,6 +215,7 @@ fn main() {
     router.get("/competitors/:id", CompetitorHandler { data: w_arc.clone() });
     router.get("/competitors/:id/records", CompetitorRecordsHandler { data: w_arc.clone() });
     router.get("/records/:puzzle_id/:type", RecordsHandler { data: w_arc.clone() });
+    router.get("/records/:puzzle_id/", SelectiveRecordsHandler { data: w_arc.clone() });
     router.get("/events", EventsHandler { data: w_arc.clone() });
 
     let mut chain = Chain::new(router);

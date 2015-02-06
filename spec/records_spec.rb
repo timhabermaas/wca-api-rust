@@ -35,8 +35,8 @@ describe "records" do
       expect(@json_response.first["single"]["time"]).to eq 956
       expect(@json_response.first["average"]["time"]).to eq 1273
       expect(@json_response.last["competitor_id"]).to eq "2007HABE01"
-      expect(@json_response.last["single"]["time"]).to eq 1252
-      expect(@json_response.last["average"]["time"]).to eq 1429
+      expect(@json_response.last["single"]["time"]).to eq 1087
+      expect(@json_response.last["average"]["time"]).to eq 1376
     end
   end
 
