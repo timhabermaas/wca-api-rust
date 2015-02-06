@@ -10,9 +10,11 @@ use std::collections::BTreeMap;
 use rustc_serialize::json;
 use rustc_serialize::json::{Json, ToJson};
 
-use iron::{Iron, Handler, Request, Response, IronResult};
+use iron::{Iron, Chain, Handler, Request, Response, IronResult, AfterMiddleware};
 use iron::status;
-use router::{Router, Params};
+use iron::headers;
+use iron::mime::Mime;
+use router::{Router};
 
 
 struct CompetitorHandler {
@@ -172,7 +174,16 @@ impl Handler for EventsHandler {
     }
 }
 
-// TODO add Middleware for setting JSON response and UTF-8 encoding
+struct JSONAcceptHeaderMiddleware;
+
+impl AfterMiddleware for JSONAcceptHeaderMiddleware {
+    fn after(&self, _: &mut Request, res: Response) -> IronResult<Response> {
+        let mut response = res;
+        let mime: Mime = "application/json;charset=utf-8".parse().unwrap();
+        response.headers.set(headers::ContentType(mime));
+        Ok(response)
+    }
+}
 
 fn main() {
     println!("Importing");
@@ -193,5 +204,9 @@ fn main() {
     router.get("/records/:puzzle_id/:type", RecordsHandler { data: w_arc.clone() });
     router.get("/events", EventsHandler { data: w_arc.clone() });
 
-    Iron::new(router).listen("localhost:3000").unwrap();
+    let mut chain = Chain::new(router);
+
+    chain.link_after(JSONAcceptHeaderMiddleware);
+
+    Iron::new(chain).listen("localhost:3000").unwrap();
 }
