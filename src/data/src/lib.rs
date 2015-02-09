@@ -9,7 +9,7 @@ pub mod wca_data {
     use std::collections::Bound::{Included, Unbounded};
     use rustc_serialize::Decodable;
     use rustc_serialize::Decoder;
-    use std::path::Path;
+    use std::old_path::posix::Path;
 
     pub type WcaId = String;
     pub type PuzzleId = String;
