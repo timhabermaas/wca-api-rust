@@ -1,18 +1,21 @@
-extern crate nickel;
 extern crate "wca-data" as w;
-extern crate http;
 extern crate "rustc-serialize" as rustc_serialize;
+extern crate iron;
+extern crate router;
 
 use std::sync::Arc;
 
-use std::old_io::net::ip::Ipv4Addr;
-use nickel::{ Halt, Nickel, Request, QueryString, Response, HttpRouter, Middleware, MiddlewareResult };
 use w::wca_data;
 use std::collections::BTreeMap;
 use rustc_serialize::json;
 use rustc_serialize::json::{Json, ToJson};
-use http::status;
-use http::headers::content_type::MediaType;
+
+use iron::{Iron, Chain, Handler, Request, Response, IronResult, AfterMiddleware};
+use iron::status;
+use iron::headers;
+use iron::mime::Mime;
+use router::{Router};
+
 
 struct CompetitorHandler {
     data: Arc<wca_data::WCA>,
@@ -42,6 +45,7 @@ struct Competitor {
     id: String,
     name: String,
     gender: wca_data::Gender,
+    country: String,
     competition_count: u32,
 }
 
@@ -66,6 +70,7 @@ impl ToJson for Competitor {
         sub.insert("id".to_string(), self.id.to_json());
         sub.insert("name".to_string(), self.name.to_json());
         sub.insert("competition_count".to_string(), self.competition_count.to_json());
+        sub.insert("country".to_string(), self.country.to_json());
         let gender: Option<String> = match self.gender {
             wca_data::Gender::Male   => Some("m".to_string()),
             wca_data::Gender::Female => Some("f".to_string()),
@@ -79,47 +84,64 @@ impl ToJson for Competitor {
     }
 }
 
-
-
-impl Middleware for CompetitorHandler {
-    fn invoke(&self, req: &mut Request, res: &mut Response) -> MiddlewareResult {
-        let id = req.param("id");
-        let result = self.data.find_competitor(&id.to_string());
-
-        res.origin.headers.content_type = Some(MediaType::new("application".to_string(),
-                                                              "json".to_string(),
-                                                              vec![("charset".to_string(),
-                                                              "utf8".to_string())]));
-
-        match result {
-            Some(c) => {
-                let c = Competitor { id: c.id.clone(), name: c.name.clone(), gender: c.gender.clone(), competition_count: c.competition_count };
-                let data = c.to_json().to_string();
-                res.send(data);
-            },
-            None => {
-                res.status_code(status::NotFound);
-                res.send("{\"error\": \"not found\"}");
-            },
-        }
-
-        Ok(Halt)
+fn gender_to_str(gender: &wca_data::Gender) -> &str {
+    match gender {
+        &wca_data::Gender::Male   => "m",
+        &wca_data::Gender::Female => "f",
+        _                 => "",
     }
 }
 
-impl Middleware for RecordsHandler {
-    fn invoke(&self, req: &mut Request, res: &mut Response) -> MiddlewareResult {
-        res.origin.headers.content_type = Some(MediaType::new("application".to_string(),
-                                                              "json".to_string(),
-                                                              vec![("charset".to_string(),
-                                                              "utf8".to_string())]));
+impl Handler for CompetitorHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let ref id = req.extensions.get::<Router>().unwrap().find("id").unwrap();
+        let result = self.data.find_competitor(&id.to_string()).unwrap();
+        let c = Competitor { id: result.id.clone(), name: result.name.clone(), gender: result.gender.clone(), competition_count: result.competition_count, country: result.country.clone() };
+        let data = c.to_json().to_string();
+        Ok(Response::with((status::Ok, data)))
+    }
+}
 
-        let puzzle = req.param("puzzle_id");
-        let type_   = req.param("type");
-        let rankings = match type_ {
+impl Handler for CompetitorSearchHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        // TODO use a proper way to parse query strings
+        let query = req.url.query.clone().unwrap();
+        let q = &query[2..query.len()];
+
+        let competitors = self.data.find_competitors(&q.to_string());
+        let competitors: Vec<CompetitorPartOfCollection> = competitors.iter().map(|c| CompetitorPartOfCollection { id: c.id.as_slice(), name: c.name.as_slice(), gender: gender_to_str(&c.gender), country: c.country.as_slice(), competition_count: c.competition_count }).collect();
+        let mut wrapped_competitors: BTreeMap<String, &Vec<CompetitorPartOfCollection>> = BTreeMap::new();
+        wrapped_competitors.insert("competitors".to_string(), &competitors);
+
+        Ok(Response::with((status::Ok, json::encode(&wrapped_competitors).unwrap())))
+    }
+}
+
+impl Handler for CompetitorRecordsHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+
+        let ref id = req.extensions.get::<Router>().unwrap().find("id").unwrap();
+
+        match self.data.find_records(&id.to_string()) {
+            Some(r) => {
+                Ok(Response::with((status::Ok, json::encode(r).unwrap())))
+            },
+            None => {
+                Ok(Response::with((status::NotFound, "{\"error\": \"not found\"}")))
+            }
+        }
+
+    }
+}
+
+impl Handler for RecordsHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let ref puzzle = req.extensions.get::<Router>().unwrap().find("puzzle_id").unwrap();
+        let ref _type = req.extensions.get::<Router>().unwrap().find("type").unwrap();
+        let rankings = match *_type {
             "single"  => self.data.find_rankings(&puzzle.to_string(), wca_data::ResultType::Single),
             "average" => self.data.find_rankings(&puzzle.to_string(), wca_data::ResultType::Average),
-            _         => { res.status_code(status::NotFound); return Ok(Halt); }
+            _         => { return Ok(Response::with((status::NotFound, ""))); }
         };
         match rankings {
             Some(v) => {
@@ -137,103 +159,46 @@ impl Middleware for RecordsHandler {
                     }
                 }
                 ).collect();
-                res.send(json::encode(&rankings).unwrap());
+                Ok(Response::with((status::Ok, json::encode(&rankings).unwrap())))
             },
             None => {
-                res.status_code(status::NotFound);
-                res.send("{\"error\": \"not found\"}");
+                Ok(Response::with((status::NotFound, "")))
             },
         }
-
-        Ok(Halt)
     }
 }
 
-fn gender_to_str(gender: &wca_data::Gender) -> &str {
-    match gender {
-        &wca_data::Gender::Male   => "m",
-        &wca_data::Gender::Female => "f",
-        _                 => "",
+impl Handler for EventsHandler {
+    fn handle(&self, _: &mut Request) -> IronResult<Response> {
+        Ok(Response::with((status::Ok, json::encode(self.data.find_events()).unwrap())))
     }
 }
 
-impl Middleware for CompetitorSearchHandler {
-    fn invoke(&self, req: &mut Request, res: &mut Response) -> MiddlewareResult {
-        let q = req.query("q", "default");
-        let m = q.get(0).unwrap();
-        let competitors = self.data.find_competitors(m);
-        let competitors: Vec<CompetitorPartOfCollection> = competitors.iter().map(|c| CompetitorPartOfCollection { id: c.id.as_slice(), name: c.name.as_slice(), gender: gender_to_str(&c.gender), country: c.country.as_slice(), competition_count: c.competition_count }).collect();
-        let mut wrapped_competitors: BTreeMap<String, &Vec<CompetitorPartOfCollection>> = BTreeMap::new();
-        wrapped_competitors.insert("competitors".to_string(), &competitors);
+impl Handler for SelectiveRecordsHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let ref puzzle_id = req.extensions.get::<Router>().unwrap().find("puzzle_id").unwrap();
+        // parsing of ids= query parameters
+        let foo = req.url.query.clone().unwrap();
+        let ids: Vec<String> = foo.split('&').map(|param| (&param[4..param.len()]).to_string()).collect();
 
-        res.origin.headers.content_type = Some(MediaType::new("application".to_string(),
-                                                              "json".to_string(),
-                                                              vec![("charset".to_string(),
-                                                              "utf8".to_string())]));
-        res.send(json::encode(&wrapped_competitors).unwrap());
-        Ok(Halt)
+        let records = self.data.find_rankings_for(&puzzle_id.to_string(), ids);
+        Ok(Response::with((status::Ok, json::encode(&records).unwrap())))
     }
+
 }
 
-impl Middleware for CompetitorRecordsHandler {
-    fn invoke(&self, req: &mut Request, res: &mut Response) -> MiddlewareResult {
-        res.origin.headers.content_type = Some(MediaType::new("application".to_string(),
-                                                              "json".to_string(),
-                                                              vec![("charset".to_string(),
-                                                              "utf8".to_string())]));
+struct JSONAcceptHeaderMiddleware;
 
-        let id = req.param("id");
-        match self.data.find_records(&id.to_string()) {
-            Some(r) => {
-                res.send(json::encode(r).unwrap());
-            },
-            None => {
-                res.status_code(status::NotFound);
-                res.send("{\"error\": \"not found\"}");
-            }
-        }
-
-        Ok(Halt)
+impl AfterMiddleware for JSONAcceptHeaderMiddleware {
+    fn after(&self, _: &mut Request, res: Response) -> IronResult<Response> {
+        let mut response = res;
+        let mime: Mime = "application/json;charset=utf-8".parse().unwrap();
+        response.headers.set(headers::ContentType(mime));
+        Ok(response)
     }
 }
-
-impl Middleware for EventsHandler {
-    fn invoke(&self, _: &mut Request, res: &mut Response) -> MiddlewareResult {
-        res.origin.headers.content_type = Some(MediaType::new("application".to_string(),
-                                                              "json".to_string(),
-                                                              vec![("charset".to_string(),
-                                                              "utf8".to_string())]));
-        res.send(json::encode(self.data.find_events()).unwrap());
-
-        Ok(Halt)
-    }
-}
-
-impl Middleware for SelectiveRecordsHandler {
-    fn invoke(&self, req: &mut Request, res: &mut Response) -> MiddlewareResult {
-        res.origin.headers.content_type = Some(MediaType::new("application".to_string(),
-                                                              "json".to_string(),
-                                                              vec![("charset".to_string(),
-                                                              "utf8".to_string())]));
-
-        let mut puzzle_id;
-        {
-            let req2 = &req;
-            puzzle_id = req2.param("puzzle_id").to_string();
-        }
-        let ids = req.query("ids", "");
-        let records = self.data.find_rankings_for(&puzzle_id.to_string(), ids.into_owned());
-
-        res.send(json::encode(&records).unwrap());
-
-        Ok(Halt)
-    }
-}
-
 
 fn main() {
-    let mut server = Nickel::new();
-    let mut router = Nickel::router();
     println!("Importing");
     let w = wca_data::build_from_files(&Path::new("./data/WCA_export_Persons.tsv"),
                                        &Path::new("./data/WCA_export_Results.tsv"),
@@ -244,14 +209,18 @@ fn main() {
 
     let w_arc = Arc::new(*w);
 
+    let mut router = Router::new();
+
+    router.get("/competitors", CompetitorSearchHandler { data: w_arc.clone() });
     router.get("/competitors/:id", CompetitorHandler { data: w_arc.clone() });
     router.get("/competitors/:id/records", CompetitorRecordsHandler { data: w_arc.clone() });
-    router.get("/competitors", CompetitorSearchHandler { data: w_arc.clone() });
     router.get("/records/:puzzle_id/:type", RecordsHandler { data: w_arc.clone() });
-    router.get("/records/:puzzle_id", SelectiveRecordsHandler { data: w_arc.clone() });
+    router.get("/records/:puzzle_id/", SelectiveRecordsHandler { data: w_arc.clone() });
     router.get("/events", EventsHandler { data: w_arc.clone() });
 
-    server.utilize(router);
+    let mut chain = Chain::new(router);
 
-    server.listen(Ipv4Addr(0, 0, 0, 0), 6767);
+    chain.link_after(JSONAcceptHeaderMiddleware);
+
+    Iron::new(chain).listen("localhost:3000").unwrap();
 }
