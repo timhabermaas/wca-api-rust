@@ -48,9 +48,8 @@ describe "records" do
     it "returns all records" do
       expect(@json_response.size).to eq 16
       # TODO what a stupid response...
-      expect(@json_response.first[0]).to eq "333oh"
-      expect(@json_response.first[1]["single"]["time"]).to eq 2750
-      expect(@json_response.first[1]["average"]["time"]).to eq 3067
+      expect(@json_response["333mbf"]["single"]["time"]).to eq 830315001
+      expect(@json_response["333"]["average"]["time"]).to eq 1376
     end
   end
 end

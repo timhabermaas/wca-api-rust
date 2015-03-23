@@ -9,6 +9,7 @@ use w::wca_data;
 use std::collections::BTreeMap;
 use rustc_serialize::json;
 use rustc_serialize::json::{Json, ToJson};
+use std::path::Path;
 
 use iron::{Iron, Chain, Handler, Request, Response, IronResult, AfterMiddleware};
 use iron::status;
@@ -200,11 +201,11 @@ impl AfterMiddleware for JSONAcceptHeaderMiddleware {
 
 fn main() {
     println!("Importing");
-    let w = wca_data::build_from_files(&Path::new("./data/WCA_export_Persons.tsv"),
-                                       &Path::new("./data/WCA_export_Results.tsv"),
-                                       &Path::new("./data/WCA_export_RanksSingle.tsv"),
-                                       &Path::new("./data/WCA_export_RanksAverage.tsv"),
-                                       &Path::new("./data/WCA_export_Events.tsv"));
+    let w = wca_data::build_from_files(Path::new("./data/WCA_export_Persons.tsv"),
+                                       Path::new("./data/WCA_export_Results.tsv"),
+                                       Path::new("./data/WCA_export_RanksSingle.tsv"),
+                                       Path::new("./data/WCA_export_RanksAverage.tsv"),
+                                       Path::new("./data/WCA_export_Events.tsv"));
     println!("Importing Done");
 
     let w_arc = Arc::new(*w);
@@ -222,5 +223,5 @@ fn main() {
 
     chain.link_after(JSONAcceptHeaderMiddleware);
 
-    Iron::new(chain).listen("localhost:3000").unwrap();
+    Iron::new(chain).http("localhost:3000").unwrap();
 }

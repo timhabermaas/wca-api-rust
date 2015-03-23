@@ -9,7 +9,7 @@ pub mod wca_data {
     use std::collections::Bound::{Included, Unbounded};
     use rustc_serialize::Decodable;
     use rustc_serialize::Decoder;
-    use std::old_path::posix::Path;
+    use std::path::Path;
 
     pub type WcaId = String;
     pub type PuzzleId = String;
@@ -236,7 +236,7 @@ pub mod wca_data {
     }
 
     fn load_persons(w: &mut WCA, fp: &Path) {
-        let mut rdr = csv::Reader::from_file(fp).has_headers(true).delimiter(b'\t');
+        let mut rdr = csv::Reader::from_file(fp).unwrap().has_headers(true).delimiter(b'\t');
 
         for record in rdr.decode() {
             let record: Person = record.unwrap();
@@ -245,7 +245,7 @@ pub mod wca_data {
     }
 
     fn load_competitions(w: &mut WCA, fp: &Path) {
-        let mut rdr = csv::Reader::from_file(fp).has_headers(true).delimiter(b'\t');
+        let mut rdr = csv::Reader::from_file(fp).unwrap().has_headers(true).delimiter(b'\t');
 
         for record in rdr.decode() {
             let v: Vec<String> = record.unwrap();
@@ -254,7 +254,7 @@ pub mod wca_data {
     }
 
     fn load_single_records(w: &mut WCA, fp: &Path) {
-        let mut rdr = csv::Reader::from_file(fp).has_headers(true).delimiter(b'\t');
+        let mut rdr = csv::Reader::from_file(fp).unwrap().has_headers(true).delimiter(b'\t');
 
         for record in rdr.decode() {
             let r: Rank = record.unwrap();
@@ -268,7 +268,7 @@ pub mod wca_data {
     }
 
     fn load_average_records(w: &mut WCA, fp: &Path) {
-        let mut rdr = csv::Reader::from_file(fp).has_headers(true).delimiter(b'\t');
+        let mut rdr = csv::Reader::from_file(fp).unwrap().has_headers(true).delimiter(b'\t');
 
         for record in rdr.decode() {
             let r: Rank = record.unwrap();
@@ -278,7 +278,7 @@ pub mod wca_data {
     }
 
     fn load_events(w: &mut WCA, fp: &Path) {
-        let mut rdr = csv::Reader::from_file(fp).has_headers(true).delimiter(b'\t');
+        let mut rdr = csv::Reader::from_file(fp).unwrap().has_headers(true).delimiter(b'\t');
 
         for record in rdr.decode() {
             let e: Event = record.unwrap();

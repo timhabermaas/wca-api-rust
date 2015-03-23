@@ -5,7 +5,7 @@ version = "0.0.1"
 authors = ["Tim Habermaas"]
 
 [dependencies]
-rustc-serialize = "0.2"
+rustc-serialize = "0.3"
 iron = "*"
 router = "*"
 
