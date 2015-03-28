@@ -8,5 +8,5 @@ ADD Cargo.toml /home/rust/wca-api/
 ADD Cargo.lock /home/rust/wca-api/
 WORKDIR /home/rust/wca-api
 RUN cargo build --release
-EXPOSE 6767
+EXPOSE 3000
 VOLUME ["/home/rust/wca-api/data"]
