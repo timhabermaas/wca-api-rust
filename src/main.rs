@@ -96,10 +96,16 @@ fn gender_to_str(gender: &wca_data::Gender) -> &str {
 impl Handler for CompetitorHandler {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let ref id = req.extensions.get::<Router>().unwrap().find("id").unwrap();
-        let result = self.data.find_competitor(&id.to_string()).unwrap();
-        let c = Competitor { id: result.id.clone(), name: result.name.clone(), gender: result.gender.clone(), competition_count: result.competition_count, country: result.country.clone() };
-        let data = c.to_json().to_string();
-        Ok(Response::with((status::Ok, data)))
+        match self.data.find_competitor(&id.to_string()) {
+            Option::Some(result) => {
+                let c = Competitor { id: result.id.clone(), name: result.name.clone(), gender: result.gender.clone(), competition_count: result.competition_count, country: result.country.clone() };
+                let data = c.to_json().to_string();
+                Ok(Response::with((status::Ok, data)))
+            },
+            None => {
+                Ok(Response::with((status::NotFound, "{\"error\": \"not found\"}")))
+            },
+        }
     }
 }
 
