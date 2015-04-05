@@ -1,4 +1,7 @@
-extern crate "rustc-serialize" as rustc_serialize;
+#![feature(core)]
+#![feature(convert)]
+
+extern crate rustc_serialize;
 extern crate csv;
 
 pub mod wca_data {
@@ -21,7 +24,7 @@ pub mod wca_data {
         Unknown,
     }
 
-    #[derive(Copy)]
+    #[derive(Clone, Copy)]
     pub enum ResultType {
         Single,
         Average,
@@ -31,7 +34,7 @@ pub mod wca_data {
         fn decode<D: Decoder>(d: &mut D) -> Result<Gender, D::Error> {
             match d.read_str() {
                 Ok(s) => {
-                    match s.as_slice() {
+                    match s.as_ref() {
                         "m" => Ok(Gender::Male),
                         "f" => Ok(Gender::Female),
                         _   => Ok(Gender::Unknown),
